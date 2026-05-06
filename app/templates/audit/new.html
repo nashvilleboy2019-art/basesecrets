@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Nouvelle session d'audit — BaseSecrets{% endblock %}
+
+{% block content %}
+<div class="p-6 max-w-lg mx-auto">
+
+  <div class="flex items-center gap-2 text-xs text-gray-400 mb-4">
+    <a href="/audit" class="hover:text-indigo-600">Audit</a>
+    <span>/</span>
+    <span class="text-gray-600">Nouvelle session</span>
+  </div>
+
+  <h1 class="text-xl font-bold text-gray-900 mb-6">Nouvelle session d'audit</h1>
+
+  <form method="post" action="/audit/"
+        class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1.5">
+        Nom de la session <span class="text-red-500">*</span>
+      </label>
+      <input type="text" name="name" required autofocus
+        value="Audit {{ current_year }}"
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        placeholder="ex: Audit annuel 2025">
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1.5">
+        Année <span class="text-red-500">*</span>
+      </label>
+      <input type="number" name="year" required
+        value="{{ current_year }}" min="2000" max="2099"
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+    </div>
+    <div class="flex gap-3 pt-2 border-t border-gray-100">
+      <button type="submit"
+        class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+        Créer la session
+      </button>
+      <a href="/audit"
+         class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-medium rounded-lg transition-colors">
+        Annuler
+      </a>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — BaseSecrets</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <div class="text-white text-3xl font-bold tracking-tight mb-1">BaseSecrets</div>
+      <div class="text-slate-400 text-sm">Gestion des secrets d'entreprise</div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-xl p-8">
+      <h2 class="text-gray-800 text-lg font-semibold mb-6">Connexion</h2>
+
+      {% if error %}
+      <div class="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <form method="post" action="/login" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Nom d'utilisateur</label>
+          <input type="text" name="username" required autofocus
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+            placeholder="votre identifiant">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Mot de passe</label>
+          <input type="password" name="password" required
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+            placeholder="••••••••">
+        </div>
+        <button type="submit"
+          class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors mt-2">
+          Se connecter
+        </button>
+      </form>
+    </div>
+    <p class="text-center mt-5 text-xs text-slate-500">
+      <a href="/guide" target="_blank" class="hover:text-slate-300 transition-colors underline underline-offset-2">
+        Guide d'utilisation &amp; installation →
+      </a>
+    </p>
+  </div>
+</body>
+</html>

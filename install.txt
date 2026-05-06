@@ -1,0 +1,82 @@
+================================================================
+  BASESECRETS — Guide d'installation
+  Gestion des secrets d'entreprise
+  Version 1.0 — Mai 2026
+================================================================
+
+PRÉREQUIS
+---------
+- Windows 10 / 11
+- Python 3.10 ou supérieur (https://www.python.org/downloads/)
+  Cocher "Add Python to PATH" lors de l'installation !
+
+Vérifier que Python est bien installé :
+  > python --version
+
+
+INSTALLATION
+------------
+1. Décompresser l'archive basesecrets.zip dans le dossier de votre choix
+   Exemple : C:\Apps\basesecrets\
+
+2. Ouvrir un terminal PowerShell ou cmd dans ce dossier
+   (clic droit dans l'explorateur > "Ouvrir dans le terminal")
+
+3. Installer les dépendances Python :
+   > pip install -r requirements.txt
+
+4. Démarrer l'application :
+   > python run.py
+
+5. Ouvrir un navigateur et aller sur :
+   http://127.0.0.1:8000
+
+
+COMPTES PAR DÉFAUT
+------------------
+  Responsable : admin / noukie2017
+  Auditeur    : auditeur / audit123
+
+  !! Changer les mots de passe après la première connexion !!
+  (Menu Comptes > Modifier)
+
+
+DONNÉES
+-------
+La base de données est créée automatiquement au premier démarrage :
+  basesecrets/data/secrets.db
+
+Les images scannées sont stockées dans :
+  basesecrets/uploads/scans/
+
+Pour sauvegarder : copier ces deux dossiers.
+
+
+DÉMARRAGE QUOTIDIEN
+-------------------
+Ouvrir un terminal dans le dossier de l'application, puis :
+  > python run.py
+
+Laisser la fenêtre ouverte pendant toute la session.
+Fermer la fenêtre (ou Ctrl+C) pour arrêter le serveur.
+
+
+GUIDE D'UTILISATION
+-------------------
+Disponible directement dans l'application :
+  http://127.0.0.1:8000/guide
+
+
+PROBLÈMES COURANTS
+------------------
+- "python n'est pas reconnu" → Python n'est pas dans le PATH.
+  Réinstaller Python en cochant "Add Python to PATH".
+
+- "Adresse déjà utilisée" → Une autre instance tourne déjà.
+  Fermer l'ancienne fenêtre ou redémarrer le PC.
+
+- "Module not found" → Relancer : pip install -r requirements.txt
+
+- Page blanche / erreur 500 → Regarder les messages dans le terminal.
+
+================================================================

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Journal d'activité — BaseSecrets{% endblock %}
+
+{% block content %}
+<div class="p-6">
+
+  <div class="mb-5">
+    <h1 class="text-xl font-bold text-gray-900">Journal d'activité</h1>
+    <p class="text-gray-400 text-xs mt-0.5">{{ pagination.total }} entrée{{ 's' if pagination.total > 1 else '' }}</p>
+  </div>
+
+  <!-- Filters -->
+  <form method="get" class="flex flex-wrap gap-2 mb-4">
+    <input type="text" name="username" value="{{ username }}" placeholder="Filtrer par utilisateur…"
+      class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48">
+    <input type="text" name="action" value="{{ action }}" placeholder="Filtrer par action…"
+      class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 w-48">
+    <button type="submit"
+      class="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white text-sm rounded-lg transition-colors">
+      Filtrer
+    </button>
+    {% if username or action %}
+    <a href="/activity" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm rounded-lg transition-colors">
+      Effacer
+    </a>
+    {% endif %}
+  </form>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    {% if pagination.results %}
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide border-b border-gray-100">
+          <th class="text-left px-4 py-3 font-medium">Date / Heure</th>
+          <th class="text-left px-4 py-3 font-medium">Utilisateur</th>
+          <th class="text-left px-4 py-3 font-medium">Action</th>
+          <th class="text-left px-4 py-3 font-medium">Ressource</th>
+          <th class="text-left px-4 py-3 font-medium">Détail</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        {% for log in pagination.results %}
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-4 py-2.5 text-gray-400 text-xs whitespace-nowrap font-mono">
+            {{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}
+          </td>
+          <td class="px-4 py-2.5">
+            <span class="font-medium text-gray-700">{{ log.username }}</span>
+          </td>
+          <td class="px-4 py-2.5 text-gray-700">{{ log.action }}</td>
+          <td class="px-4 py-2.5 text-gray-500 text-xs">
+            {% if log.resource %}
+            <span class="px-1.5 py-0.5 bg-gray-100 rounded text-xs">{{ log.resource }}</span>
+            {% if log.resource_id %}
+            <span class="text-gray-400">#{{ log.resource_id }}</span>
+            {% endif %}
+            {% endif %}
+          </td>
+          <td class="px-4 py-2.5 text-gray-500 text-xs truncate max-w-xs">{{ log.details or '' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if pagination.pages > 1 %}
+    <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
+      <p class="text-xs text-gray-500">
+        {{ pagination.start }}–{{ pagination.end }} sur {{ pagination.total }}
+      </p>
+      <div class="flex gap-1">
+        {% if pagination.has_prev %}
+        <a href="?page={{ pagination.page - 1 }}&username={{ username }}&action={{ action }}"
+           class="px-3 py-1 text-xs border border-gray-200 rounded-md hover:bg-gray-50">← Précédent</a>
+        {% endif %}
+        {% if pagination.has_next %}
+        <a href="?page={{ pagination.page + 1 }}&username={{ username }}&action={{ action }}"
+           class="px-3 py-1 text-xs border border-gray-200 rounded-md hover:bg-gray-50">Suivant →</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-16 text-gray-400">
+      <p class="font-medium">Aucune entrée trouvée</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

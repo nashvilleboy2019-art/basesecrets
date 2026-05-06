@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Comptes utilisateurs — BaseSecrets{% endblock %}
+
+{% block content %}
+<div class="p-6 max-w-3xl mx-auto">
+
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h1 class="text-xl font-bold text-gray-900">Comptes utilisateurs</h1>
+      <p class="text-gray-400 text-xs mt-0.5">{{ users|length }} compte{{ 's' if users|length > 1 else '' }}</p>
+    </div>
+    <a href="/users/new"
+       class="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Nouveau compte
+    </a>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide border-b border-gray-100">
+          <th class="text-left px-5 py-3 font-medium">Utilisateur</th>
+          <th class="text-left px-5 py-3 font-medium">Rôle</th>
+          <th class="text-left px-5 py-3 font-medium">Créé le</th>
+          <th class="px-5 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        {% for u in users %}
+        <tr class="hover:bg-gray-50 transition-colors {% if u.id == user.id %}bg-indigo-50/40{% endif %}">
+          <td class="px-5 py-3">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0
+                {% if u.role == 'responsable' %}bg-indigo-500{% else %}bg-slate-400{% endif %}">
+                {{ u.username[0]|upper }}
+              </div>
+              <div>
+                <p class="font-medium text-gray-900">{{ u.username }}</p>
+                {% if u.id == user.id %}
+                <p class="text-xs text-indigo-500">Vous</p>
+                {% endif %}
+              </div>
+            </div>
+          </td>
+          <td class="px-5 py-3">
+            {% if u.role == 'responsable' %}
+            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-semibold">Responsable</span>
+            {% else %}
+            <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">Auditeur</span>
+            {% endif %}
+          </td>
+          <td class="px-5 py-3 text-gray-400 text-xs">{{ u.created_at.strftime('%d/%m/%Y') }}</td>
+          <td class="px-5 py-3 text-right whitespace-nowrap">
+            <a href="/users/{{ u.id }}/edit"
+               class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Modifier</a>
+            {% if u.id != user.id %}
+            <span class="text-gray-200 mx-2">|</span>
+            <form method="post" action="/users/{{ u.id }}/delete" class="inline"
+                  onsubmit="return confirm('Supprimer le compte « {{ u.username }} » ?')">
+              <button type="submit" class="text-red-500 hover:text-red-700 text-xs font-medium">
+                Supprimer
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-4 px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl text-xs text-blue-700">
+    <strong>Rôles :</strong>
+    Le <strong>Responsable</strong> peut créer, modifier et supprimer des secrets.
+    L'<strong>Auditeur</strong> peut consulter et effectuer les audits annuels.
+  </div>
+
+</div>
+{% endblock %}

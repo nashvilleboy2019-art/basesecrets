@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Audit annuel — BaseSecrets{% endblock %}
+
+{% block content %}
+<div class="p-6">
+
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h1 class="text-xl font-bold text-gray-900">Audit annuel</h1>
+      <p class="text-gray-400 text-xs mt-0.5">Sessions de contrôle des enveloppes</p>
+    </div>
+    <a href="/audit/new"
+       class="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Nouvelle session
+    </a>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    {% if sessions %}
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide border-b border-gray-100">
+          <th class="text-left px-4 py-3 font-medium">Session</th>
+          <th class="text-left px-4 py-3 font-medium">Année</th>
+          <th class="text-left px-4 py-3 font-medium">Statut</th>
+          <th class="text-left px-4 py-3 font-medium">Scannés</th>
+          <th class="text-left px-4 py-3 font-medium">Conformes</th>
+          <th class="text-left px-4 py-3 font-medium">Inconnus</th>
+          <th class="text-left px-4 py-3 font-medium">Date</th>
+          <th class="px-4 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-50">
+        {% for s in sessions %}
+        <tr class="hover:bg-gray-50 transition-colors">
+          <td class="px-4 py-3 font-medium text-gray-900">{{ s.name }}</td>
+          <td class="px-4 py-3 text-gray-600">{{ s.year }}</td>
+          <td class="px-4 py-3">
+            {% if s.status == 'open' %}
+            <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded text-xs font-medium">En cours</span>
+            {% else %}
+            <span class="px-2 py-0.5 bg-gray-100 text-gray-500 rounded text-xs font-medium">Clôturée</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3 text-gray-600 font-medium">{{ s._total }}</td>
+          <td class="px-4 py-3">
+            <span class="text-emerald-700 font-medium">{{ s._match }}</span>
+          </td>
+          <td class="px-4 py-3">
+            <span class="{% if s._unknown > 0 %}text-amber-600 font-medium{% else %}text-gray-400{% endif %}">{{ s._unknown }}</span>
+          </td>
+          <td class="px-4 py-3 text-gray-400 text-xs">{{ s.created_at.strftime('%d/%m/%Y') }}</td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            {% if s.status == 'open' %}
+            <a href="/audit/{{ s.id }}" class="text-indigo-600 hover:text-indigo-800 text-xs font-medium">Scanner</a>
+            {% else %}
+            <a href="/audit/{{ s.id }}/report" class="text-gray-600 hover:text-gray-800 text-xs font-medium">Rapport</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="text-center py-16 text-gray-400">
+      <svg class="w-12 h-12 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+      </svg>
+      <p class="font-medium">Aucune session d'audit</p>
+      <p class="text-xs mt-1">Créez une nouvelle session pour commencer l'audit</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

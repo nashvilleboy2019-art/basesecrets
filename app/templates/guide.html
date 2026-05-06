@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide — BaseSecrets</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 text-sm">
+
+  <!-- Top bar -->
+  <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+    <div>
+      <span class="font-bold text-base tracking-tight">BaseSecrets</span>
+      <span class="text-slate-400 ml-3">Guide d'utilisation &amp; installation</span>
+    </div>
+    <a href="/login" class="text-slate-300 hover:text-white text-xs transition-colors">← Retour à la connexion</a>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-10 flex gap-8">
+
+    <!-- Sidebar TOC -->
+    <aside class="w-48 flex-shrink-0 hidden lg:block">
+      <div class="sticky top-20">
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Sommaire</p>
+        <nav class="space-y-1 text-xs">
+          <a href="#installation" class="block text-gray-600 hover:text-indigo-600 py-0.5">Installation</a>
+          <a href="#demarrage" class="block text-gray-600 hover:text-indigo-600 py-0.5">Démarrage</a>
+          <a href="#roles" class="block text-gray-600 hover:text-indigo-600 py-0.5">Rôles</a>
+          <a href="#secrets" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Secrets</a>
+          <a href="#envelope" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Changement enveloppe</a>
+          <a href="#audit" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Audit annuel</a>
+          <a href="#journal" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Journal</a>
+          <a href="#comptes" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Comptes</a>
+          <a href="#douchette" class="block text-gray-600 hover:text-indigo-600 py-0.5">Douchette USB</a>
+          <a href="#faq" class="block text-gray-600 hover:text-indigo-600 py-0.5">FAQ</a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="flex-1 min-w-0 space-y-10">
+
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Guide BaseSecrets</h1>
+        <p class="text-gray-500">
+          BaseSecrets est un portail de gestion des secrets d'entreprise (mots de passe, clés…) stockés
+          dans des enveloppes scellées en coffre-fort. Ce guide couvre l'installation et l'utilisation complète.
+        </p>
+      </div>
+
+      <!-- INSTALLATION -->
+      <section id="installation">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Installation</h2>
+
+        <div class="space-y-5">
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Prérequis</h3>
+            <ul class="list-disc list-inside text-gray-600 space-y-1">
+              <li>Python 3.10 ou supérieur</li>
+              <li>Accès Internet pour le premier lancement (CDN Tailwind CSS)</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">1. Installer les dépendances</h3>
+            <p class="text-gray-600 mb-2">Ouvrez un terminal dans le dossier <code class="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">basesecrets\</code> et exécutez :</p>
+            <div class="bg-slate-800 text-emerald-300 rounded-lg p-4 font-mono text-xs">
+              pip install -r requirements.txt
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">2. Lancer l'application</h3>
+            <div class="bg-slate-800 text-emerald-300 rounded-lg p-4 font-mono text-xs">
+              python run.py
+            </div>
+            <p class="text-gray-500 text-xs mt-2">
+              Au premier lancement, la base de données est créée automatiquement et deux comptes par défaut sont initialisés.
+            </p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">3. Accéder à l'application</h3>
+            <p class="text-gray-600">Ouvrez votre navigateur sur <span class="font-mono bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-xs">http://127.0.0.1:8000</span></p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Structure des fichiers</h3>
+            <div class="bg-gray-100 rounded-lg p-4 font-mono text-xs text-gray-700 leading-relaxed">
+              basesecrets/<br>
+              ├── run.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-gray-400">← point d'entrée</span><br>
+              ├── requirements.txt<br>
+              ├── data/<br>
+              │&nbsp;&nbsp; └── secrets.db &nbsp;&nbsp;&nbsp;<span class="text-gray-400">← base SQLite (générée)</span><br>
+              ├── uploads/<br>
+              │&nbsp;&nbsp; └── scans/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-gray-400">← images des enveloppes</span><br>
+              └── app/<br>
+              &nbsp;&nbsp;&nbsp; ├── main.py<br>
+              &nbsp;&nbsp;&nbsp; ├── models.py<br>
+              &nbsp;&nbsp;&nbsp; ├── routers/<br>
+              &nbsp;&nbsp;&nbsp; └── templates/
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DÉMARRAGE -->
+      <section id="demarrage">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Premier démarrage</h2>
+        <div class="overflow-hidden rounded-xl border border-gray-200">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                <th class="text-left px-4 py-3 font-medium">Compte</th>
+                <th class="text-left px-4 py-3 font-medium">Mot de passe</th>
+                <th class="text-left px-4 py-3 font-medium">Rôle</th>
+                <th class="text-left px-4 py-3 font-medium">Droits</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr>
+                <td class="px-4 py-3 font-mono font-bold text-gray-900">admin</td>
+                <td class="px-4 py-3 font-mono text-gray-600">noukie2017</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs font-medium">responsable</span></td>
+                <td class="px-4 py-3 text-gray-600">Lecture + modifications + audit</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-mono font-bold text-gray-900">auditeur</td>
+                <td class="px-4 py-3 font-mono text-gray-600">audit123</td>
+                <td class="px-4 py-3"><span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium">auditeur</span></td>
+                <td class="px-4 py-3 text-gray-600">Lecture seule + audit annuel</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-amber-600 text-xs mt-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+          Changez les mots de passe par défaut dès la première utilisation.
+        </p>
+      </section>
+
+      <!-- RÔLES -->
+      <section id="roles">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Rôles et droits</h2>
+        <div class="overflow-hidden rounded-xl border border-gray-200">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+                <th class="text-left px-4 py-3 font-medium">Action</th>
+                <th class="text-center px-4 py-3 font-medium">Auditeur</th>
+                <th class="text-center px-4 py-3 font-medium">Responsable</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 text-xs">
+              <tr><td class="px-4 py-2.5 text-gray-700">Consulter les secrets</td><td class="text-center text-emerald-600 font-bold">✓</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Rechercher</td><td class="text-center text-emerald-600 font-bold">✓</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr><td class="px-4 py-2.5 text-gray-700">Voir l'historique</td><td class="text-center text-emerald-600 font-bold">✓</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Lancer / scanner un audit annuel</td><td class="text-center text-emerald-600 font-bold">✓</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr><td class="px-4 py-2.5 text-gray-700">Consulter le journal</td><td class="text-center text-emerald-600 font-bold">✓</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Créer un secret</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr><td class="px-4 py-2.5 text-gray-700">Modifier un secret</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Changer un numéro d'enveloppe</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr><td class="px-4 py-2.5 text-gray-700">Gérer les comptes utilisateurs</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECRETS -->
+      <section id="secrets">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Module Secrets</h2>
+        <div class="space-y-4 text-gray-600">
+          <p>Le registre des secrets liste l'ensemble des secrets enregistrés. Chaque secret représente un mot de passe ou une clé stockée dans une enveloppe scellée, elle-même rangée dans un coffre-fort.</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Champs d'un secret</h3>
+            <div class="overflow-hidden rounded-xl border border-gray-200">
+              <table class="w-full text-xs">
+                <tbody class="divide-y divide-gray-100">
+                  <tr><td class="px-4 py-2.5 font-medium text-gray-800 w-40">Identifiant</td><td class="px-4 py-2.5 text-gray-600">Clé technique unique et immuable (ex : <code class="font-mono bg-gray-100 px-1">LDAP_ADMIN</code>)</td></tr>
+                  <tr class="bg-gray-50"><td class="px-4 py-2.5 font-medium text-gray-800">Libellé</td><td class="px-4 py-2.5 text-gray-600">Nom lisible du secret</td></tr>
+                  <tr><td class="px-4 py-2.5 font-medium text-gray-800">Nom technique</td><td class="px-4 py-2.5 text-gray-600">Nom du système ou serveur porteur du secret (ex : srv-ldap01)</td></tr>
+                  <tr class="bg-gray-50"><td class="px-4 py-2.5 font-medium text-gray-800">Domaine</td><td class="px-4 py-2.5 text-gray-600">Domaine fonctionnel (ex : Active Directory, Réseau)</td></tr>
+                  <tr><td class="px-4 py-2.5 font-medium text-gray-800">Coffre fort</td><td class="px-4 py-2.5 text-gray-600">Nom du coffre où est rangée l'enveloppe</td></tr>
+                  <tr class="bg-gray-50"><td class="px-4 py-2.5 font-medium text-gray-800">N° enveloppe</td><td class="px-4 py-2.5 text-gray-600">Numéro unique de l'enveloppe actuelle (code-barres scannable)</td></tr>
+                  <tr><td class="px-4 py-2.5 font-medium text-gray-800">Scan enveloppe</td><td class="px-4 py-2.5 text-gray-600">Photo ou scan de la face de l'enveloppe (optionnel, JPG/PNG/PDF)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Recherche</h3>
+            <p>La barre de recherche filtre simultanément sur le libellé, l'identifiant, le nom technique et le numéro d'enveloppe. Les menus déroulants permettent de filtrer par domaine ou coffre.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Historique</h3>
+            <p>Chaque modification est tracée dans la fiche du secret : création, modification des informations, changement d'enveloppe. L'ancienne et la nouvelle valeur sont conservées indéfiniment.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHANGEMENT D'ENVELOPPE -->
+      <section id="envelope">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Changement d'enveloppe</h2>
+        <div class="space-y-4 text-gray-600">
+          <p>Lorsqu'un secret est utilisé (ouverture de l'enveloppe), il est reconditionné dans une nouvelle enveloppe avec un nouveau numéro. Ce flux est distinct de la modification classique et génère une entrée spécifique dans l'historique.</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Procédure</h3>
+            <ol class="list-decimal list-inside space-y-2">
+              <li>Ouvrir la fiche du secret concerné</li>
+              <li>Cliquer sur <strong>Changer enveloppe</strong></li>
+              <li>Scanner le code-barres de la nouvelle enveloppe avec la douchette (ou saisir manuellement)</li>
+              <li>Optionnel : ajouter une note explicative (raison du changement)</li>
+              <li>Optionnel : joindre un scan de la nouvelle enveloppe</li>
+              <li>Cliquer sur <strong>Valider le changement</strong></li>
+            </ol>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-blue-800 text-xs">
+            L'ancien numéro d'enveloppe est conservé dans l'historique avec la date, l'heure et le nom de l'opérateur.
+          </div>
+        </div>
+      </section>
+
+      <!-- AUDIT ANNUEL -->
+      <section id="audit">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Audit annuel</h2>
+        <div class="space-y-4 text-gray-600">
+          <p>L'audit annuel consiste à ouvrir les coffres, scanner toutes les enveloppes avec la douchette et vérifier que chaque numéro scanné correspond à un secret enregistré en base.</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Déroulement</h3>
+            <ol class="list-decimal list-inside space-y-2">
+              <li>Aller dans <strong>Audit annuel</strong> → <strong>Nouvelle session</strong></li>
+              <li>Nommer la session (ex : <em>Audit 2025</em>) et valider</li>
+              <li>L'interface de scan s'ouvre : l'input est automatiquement focalisé</li>
+              <li>Scanner chaque enveloppe l'une après l'autre avec la douchette</li>
+              <li>Chaque scan affiche immédiatement le résultat (voir tableau)</li>
+              <li>À la fin, cliquer sur <strong>Clôturer et voir le rapport</strong></li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Statuts de scan</h3>
+            <div class="overflow-hidden rounded-xl border border-gray-200">
+              <table class="w-full text-xs">
+                <tbody class="divide-y divide-gray-100">
+                  <tr>
+                    <td class="px-4 py-3 w-28"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded font-medium">Conforme</span></td>
+                    <td class="px-4 py-3 text-gray-600">Le numéro scanné correspond à un secret en base. Tout va bien.</td>
+                  </tr>
+                  <tr class="bg-gray-50">
+                    <td class="px-4 py-3"><span class="px-2 py-0.5 bg-amber-50 text-amber-700 rounded font-medium">Inconnu</span></td>
+                    <td class="px-4 py-3 text-gray-600">Numéro non trouvé en base. À investiguer : enveloppe non enregistrée ou erreur de saisie.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Rapport</h3>
+            <p>Le rapport de fin de session affiche :</p>
+            <ul class="list-disc list-inside space-y-1 mt-1">
+              <li><strong>Enveloppes conformes</strong> — scannées et présentes en base</li>
+              <li><strong>Enveloppes inconnues</strong> — scannées mais absentes de la base</li>
+              <li><strong>Secrets non scannés</strong> — présents en base mais enveloppe non scannée (potentiellement manquants)</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOURNAL -->
+      <section id="journal">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Journal d'activité</h2>
+        <p class="text-gray-600">
+          Toutes les actions sont tracées automatiquement : connexions, consultations, créations, modifications,
+          changements d'enveloppe et opérations d'audit. Le journal est accessible depuis le menu latéral et
+          peut être filtré par utilisateur ou type d'action.
+        </p>
+      </section>
+
+      <!-- GESTION DES COMPTES -->
+      <section id="comptes">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Gestion des comptes</h2>
+        <div class="space-y-4 text-gray-600">
+          <p>Accessible depuis le menu <strong>Comptes</strong> (visible uniquement pour les responsables). Cette section permet de créer, modifier et supprimer les comptes utilisateurs de l'application.</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Créer un compte</h3>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Cliquer sur <strong>Nouveau compte</strong></li>
+              <li>Saisir un nom d'utilisateur (minimum 3 caractères)</li>
+              <li>Saisir un mot de passe (minimum 6 caractères)</li>
+              <li>Sélectionner le rôle : <strong>Responsable</strong> ou <strong>Auditeur</strong></li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Modifier un compte</h3>
+            <p>Cliquer sur <strong>Modifier</strong> à côté du compte. Le mot de passe peut être laissé vide pour le conserver sans changement.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Supprimer un compte</h3>
+            <p>Cliquer sur <strong>Supprimer</strong>. Deux règles s'appliquent :</p>
+            <ul class="list-disc list-inside space-y-1 mt-1">
+              <li>Impossible de supprimer son propre compte</li>
+              <li>Impossible de supprimer le dernier compte responsable</li>
+            </ul>
+          </div>
+
+          <div class="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-amber-800 text-xs">
+            Toutes les opérations sur les comptes sont enregistrées dans le journal d'activité.
+          </div>
+        </div>
+      </section>
+
+      <!-- DOUCHETTE -->
+      <section id="douchette">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Utilisation de la douchette USB</h2>
+        <div class="space-y-3 text-gray-600">
+          <p>La douchette code-barres USB fonctionne en mode <strong>clavier</strong> : elle tape le numéro dans le champ actif puis envoie automatiquement la touche <kbd class="px-1.5 py-0.5 bg-gray-200 rounded text-xs font-mono">Entrée</kbd>.</p>
+          <p>Aucun pilote spécifique n'est requis. Il suffit de :</p>
+          <ol class="list-decimal list-inside space-y-1">
+            <li>Brancher la douchette sur un port USB</li>
+            <li>Ouvrir la page d'audit ou la page de changement d'enveloppe</li>
+            <li>Le champ de saisie est automatiquement focalisé</li>
+            <li>Scanner l'enveloppe — la validation est instantanée</li>
+          </ol>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-blue-800 text-xs">
+            Si vous scannez une enveloppe déjà enregistrée dans la session en cours, un message d'avertissement s'affiche et le doublon est ignoré.
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">FAQ</h2>
+        <div class="space-y-4" x-data="{ open: null }">
+
+          {% set faq = [
+            ("Où sont stockées les données ?",
+             "Dans un fichier SQLite local : data/secrets.db. Ce fichier contient toutes les données et peut être sauvegardé comme n'importe quel fichier."),
+            ("Comment sauvegarder la base ?",
+             "Copiez simplement le fichier data/secrets.db. Pour une sauvegarde automatique, planifiez une copie vers un emplacement réseau sécurisé."),
+            ("Peut-on modifier l'identifiant d'un secret ?",
+             "Non, l'identifiant est immuable après création. C'est une contrainte intentionnelle pour garantir l'intégrité de la traçabilité."),
+            ("Comment changer un mot de passe utilisateur ?",
+             "Via le menu Comptes (responsable uniquement) : cliquer sur Modifier à côté du compte, saisir le nouveau mot de passe et valider. Laisser le champ vide pour ne pas le modifier."),
+            ("L'application est-elle accessible depuis d'autres postes ?",
+             "Par défaut, elle n'écoute que sur 127.0.0.1 (localhost). Pour la rendre accessible sur le réseau local, modifiez run.py : remplacez host='127.0.0.1' par host='0.0.0.0'. Assurez-vous que l'accès est restreint par le pare-feu."),
+            ("Que faire si l'application ne démarre pas ?",
+             "Vérifiez que Python 3.10+ est installé, que les dépendances sont installées (pip install -r requirements.txt) et que le port 8000 n'est pas déjà utilisé.")
+          ] %}
+
+          {% for question, reponse in faq %}
+          <div class="border border-gray-200 rounded-xl overflow-hidden">
+            <button @click="open = open === {{ loop.index }} ? null : {{ loop.index }}"
+                    class="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <span class="font-medium text-gray-800">{{ question }}</span>
+              <svg class="w-4 h-4 text-gray-400 flex-shrink-0 transition-transform"
+                   :class="open === {{ loop.index }} ? 'rotate-180' : ''"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            <div x-show="open === {{ loop.index }}" x-transition
+                 class="px-4 pb-4 text-gray-600 border-t border-gray-100 pt-3">
+              {{ reponse }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>
