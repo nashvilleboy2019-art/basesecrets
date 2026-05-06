@@ -20,7 +20,7 @@ def _get_theme_style() -> str:
     return (
         "<style>"
         f":root{{--color-sidebar:{primary};--color-accent:{secondary};}}"
-        ".nav-item-active{background-color:var(--color-accent)!important;color:#fff!important;}"
+        ".nav-item-active{color:#fff!important;border-bottom:3px solid var(--color-accent)!important;}"
         ".btn-accent{background-color:var(--color-accent)!important;color:#fff!important;transition:filter .15s;}"
         ".btn-accent:hover{filter:brightness(0.85);}"
         "</style>"

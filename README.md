@@ -126,6 +126,20 @@ Depuis **Paramètres → Thème**, les responsables peuvent personnaliser :
 - **Couleur principale** — fond de la sidebar et de la page de connexion (défaut : bleu nuit `#0f172a`)
 - **Couleur secondaire** — boutons d'action et élément de navigation actif (défaut : indigo `#4f46e5`)
 
+## Scripts de démonstration
+
+Deux scripts utilitaires à la racine du projet :
+
+```bash
+# Charger des données fictives réalistes (screenshots, démonstration)
+python demo_populate.py
+
+# Remettre la base à zéro (base vierge + comptes par défaut uniquement)
+python demo_reset.py
+```
+
+`demo_populate.py` insère 18 secrets actifs répartis sur 2 coffres, 1 secret archivé, 3 sessions d'audit (dont une en cours) et un historique de changement d'enveloppe. Ces données ne sont jamais incluses dans le dépôt (`data/` est dans `.gitignore`).
+
 ## Licence
 
 Distribué sous licence [MIT](LICENSE) — libre d'utilisation, de modification et de redistribution.
