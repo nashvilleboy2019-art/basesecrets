@@ -25,6 +25,10 @@ uploads_dir = os.path.join(PARENT_DIR, "uploads")
 os.makedirs(uploads_dir, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
+screenshots_dir = os.path.join(PARENT_DIR, "screenshots")
+os.makedirs(screenshots_dir, exist_ok=True)
+app.mount("/screenshots", StaticFiles(directory=screenshots_dir), name="screenshots")
+
 app.include_router(secrets.router, prefix="/secrets")
 app.include_router(audit.router, prefix="/audit")
 app.include_router(activity.router, prefix="/activity")

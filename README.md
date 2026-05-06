@@ -12,6 +12,18 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 
 ---
 
+## Aperçu
+
+| Tableau de bord | Liste des secrets |
+|---|---|
+| ![Dashboard](screenshots/02_dashboard.png) | ![Secrets](screenshots/03_secrets_list.png) |
+
+| Audit annuel | Rapport d'audit |
+|---|---|
+| ![Audit](screenshots/08_audit_list.png) | ![Rapport](screenshots/10_audit_report.png) |
+
+---
+
 ## Fonctionnalités
 
 - **Registre des secrets** — référentiel centralisé avec recherche full-text (libellé, identifiant, nom technique, numéro d'enveloppe actuel et anciens numéros)
