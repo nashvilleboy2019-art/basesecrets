@@ -32,12 +32,16 @@ async def list_secrets(
     q: str = "",
     domaine: str = "",
     coffre: str = "",
+    archived: str = "",
     page: int = 1,
     db: Session = Depends(get_db)
 ):
     user = require_login(request, db)
+    show_archived = archived == "1"
 
     query = db.query(models.Secret)
+    if not show_archived:
+        query = query.filter(models.Secret.archived == False)
     if q:
         # Sous-requête : secrets dont un ancien num_envelope correspond
         old_env_subq = (
@@ -63,11 +67,14 @@ async def list_secrets(
     pagination = paginate(query, page)
     domaines, coffres = _get_filters(db)
 
+    archived_count = db.query(models.Secret).filter(models.Secret.archived == True).count()
+
     return templates.TemplateResponse(request, "secrets/list.html", {
         "user": user, "active": "secrets",
         "flash": get_flash(request),
         "pagination": pagination,
         "q": q, "sel_domaine": domaine, "sel_coffre": coffre,
+        "show_archived": show_archived, "archived_count": archived_count,
         "domaines": domaines, "coffres": coffres,
     })
 
@@ -413,6 +420,38 @@ async def change_envelope(
     db.commit()
 
     set_flash(request, f"Enveloppe mise à jour : {old_num} → {num_envelope}")
+    return RedirectResponse(f"/secrets/{secret_id}", status_code=302)
+
+
+@router.post("/{secret_id}/archive")
+async def archive_secret(secret_id: int, request: Request, db: Session = Depends(get_db)):
+    user = require_responsable(request, db)
+    secret = db.query(models.Secret).filter(models.Secret.id == secret_id).first()
+    if not secret:
+        raise HTTPException(status_code=404)
+    secret.archived = True
+    secret.updated_by = user.id
+    secret.updated_at = datetime.utcnow()
+    log_history(db, secret_id, "Archivage", user.id, old_values={"archived": False}, new_values={"archived": True})
+    log_activity(db, user, "Archivage secret", "secret", secret_id, secret.libelle)
+    db.commit()
+    set_flash(request, f"Secret « {secret.libelle} » archivé.")
+    return RedirectResponse(f"/secrets/{secret_id}", status_code=302)
+
+
+@router.post("/{secret_id}/unarchive")
+async def unarchive_secret(secret_id: int, request: Request, db: Session = Depends(get_db)):
+    user = require_responsable(request, db)
+    secret = db.query(models.Secret).filter(models.Secret.id == secret_id).first()
+    if not secret:
+        raise HTTPException(status_code=404)
+    secret.archived = False
+    secret.updated_by = user.id
+    secret.updated_at = datetime.utcnow()
+    log_history(db, secret_id, "Désarchivage", user.id, old_values={"archived": True}, new_values={"archived": False})
+    log_activity(db, user, "Désarchivage secret", "secret", secret_id, secret.libelle)
+    db.commit()
+    set_flash(request, f"Secret « {secret.libelle} » désarchivé.")
     return RedirectResponse(f"/secrets/{secret_id}", status_code=302)
 
 

@@ -24,6 +24,7 @@
       <thead>
         <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide border-b border-gray-100">
           <th class="text-left px-4 py-3 font-medium">Session</th>
+          <th class="text-left px-4 py-3 font-medium">Coffre</th>
           <th class="text-left px-4 py-3 font-medium">Année</th>
           <th class="text-left px-4 py-3 font-medium">Statut</th>
           <th class="text-left px-4 py-3 font-medium">Scannés</th>
@@ -37,6 +38,9 @@
         {% for s in sessions %}
         <tr class="hover:bg-gray-50 transition-colors">
           <td class="px-4 py-3 font-medium text-gray-900">{{ s.name }}</td>
+          <td class="px-4 py-3 text-gray-500 text-xs">
+            {% if s.coffre %}<span class="px-2 py-0.5 bg-slate-100 rounded font-mono">{{ s.coffre }}</span>{% else %}<span class="text-gray-300">—</span>{% endif %}
+          </td>
           <td class="px-4 py-3 text-gray-600">{{ s.year }}</td>
           <td class="px-4 py-3">
             {% if s.status == 'open' %}

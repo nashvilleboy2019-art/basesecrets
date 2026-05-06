@@ -2,7 +2,7 @@
 {% block title %}Paramètres — BaseSecrets{% endblock %}
 
 {% block content %}
-<div class="p-6 max-w-2xl mx-auto" x-data="{ tab: 'general' }">
+<div class="p-6 max-w-2xl mx-auto" x-data="{ tab: new URLSearchParams(location.search).get('tab') || 'general' }">
 
   <h1 class="text-xl font-bold text-gray-900 mb-5">Paramètres</h1>
 
@@ -12,6 +12,11 @@
             :class="tab === 'general' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'"
             class="px-4 py-1.5 rounded-md text-sm font-medium transition-all">
       Général
+    </button>
+    <button @click="tab = 'theme'"
+            :class="tab === 'theme' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'"
+            class="px-4 py-1.5 rounded-md text-sm font-medium transition-all">
+      Thème
     </button>
     <button @click="tab = 'ldap'"
             :class="tab === 'ldap' ? 'bg-white shadow text-gray-900' : 'text-gray-500 hover:text-gray-700'"
@@ -78,6 +83,61 @@
       </form>
     </div>
 
+  </div>
+
+  <!-- TAB THÈME -->
+  <div x-show="tab === 'theme'" x-transition>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <h2 class="font-semibold text-gray-800 mb-1">Couleurs de l'interface</h2>
+      <p class="text-xs text-gray-500 mb-5">Les changements s'appliquent immédiatement à toutes les pages.</p>
+
+      <form method="post" action="/settings/theme" class="space-y-5">
+
+        <div class="flex items-center gap-5">
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-2">Couleur principale</label>
+            <div class="flex items-center gap-3">
+              <input type="color" name="primary_color" value="{{ cfg.primary_color or '#0f172a' }}"
+                     class="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer p-0.5">
+              <div>
+                <p class="text-xs font-medium text-gray-700">Sidebar &amp; fond de connexion</p>
+                <p class="text-xs text-gray-400">Par défaut : bleu nuit <code class="bg-gray-100 px-1 rounded">#0f172a</code></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-5">
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-2">Couleur secondaire</label>
+            <div class="flex items-center gap-3">
+              <input type="color" name="secondary_color" value="{{ cfg.secondary_color or '#4f46e5' }}"
+                     class="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer p-0.5">
+              <div>
+                <p class="text-xs font-medium text-gray-700">Boutons, élément actif, avatar</p>
+                <p class="text-xs text-gray-400">Par défaut : indigo <code class="bg-gray-100 px-1 rounded">#4f46e5</code></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pt-1">
+          <button type="submit"
+                  class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">
+            Appliquer le thème
+          </button>
+        </div>
+
+      </form>
+
+      <form method="post" action="/settings/theme" class="mt-3">
+        <input type="hidden" name="primary_color" value="#0f172a">
+        <input type="hidden" name="secondary_color" value="#4f46e5">
+        <button type="submit" class="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+          Réinitialiser les couleurs par défaut
+        </button>
+      </form>
+    </div>
   </div>
 
   <!-- TAB LDAP -->
@@ -163,6 +223,29 @@
                    placeholder="Laisser vide pour ne pas modifier"
                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
             <p class="text-xs text-gray-400 mt-1">Stocké localement dans <code class="bg-gray-100 px-1 rounded">data/settings.json</code>.</p>
+          </div>
+
+          <!-- Allowed OU -->
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">OU autorisée (restreindre les connexions)</label>
+            <input type="text" name="ldap_allowed_ou" value="{{ cfg.ldap_allowed_ou }}"
+                   placeholder="OU=BaseSecrets,DC=entreprise,DC=local"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 font-mono">
+            <p class="text-xs text-gray-400 mt-1">
+              Si renseigné, seuls les comptes trouvés dans cette OU pourront se connecter.
+              Laisser vide pour autoriser tous les comptes AD.
+            </p>
+          </div>
+
+          <!-- Required group -->
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Groupe AD requis (optionnel)</label>
+            <input type="text" name="ldap_required_group" value="{{ cfg.ldap_required_group }}"
+                   placeholder="CN=GRP_BaseSecrets,OU=Groupes,DC=entreprise,DC=local"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 font-mono">
+            <p class="text-xs text-gray-400 mt-1">
+              DN complet du groupe. Si renseigné, l'utilisateur doit en être membre (attribut <code class="bg-gray-100 px-1 rounded">memberOf</code>).
+            </p>
           </div>
 
           <!-- Default role -->

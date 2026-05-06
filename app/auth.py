@@ -29,7 +29,7 @@ def authenticate_user(db: Session, username: str, password: str):
 
 def _authenticate_ldap(db: Session, username: str, password: str, cfg: dict):
     # Reject usernames with LDAP special characters to prevent injection
-    if not re.match(r"^[\w.\-@]+$", username) or not password:
+    if not re.match(r"^[\w.\-@\\]+$", username) or not password:
         return None
 
     try:
@@ -48,7 +48,48 @@ def _authenticate_ldap(db: Session, username: str, password: str, cfg: dict):
     except Exception:
         return None
 
-    # Auth succeeded — get or create local user record
+    # Vérification OU / groupe si configuré
+    allowed_ou = cfg.get("ldap_allowed_ou", "").strip()
+    required_group = cfg.get("ldap_required_group", "").strip()
+
+    if allowed_ou or required_group:
+        # Extraire le sAMAccountName (partie avant @ ou après \)
+        short = username.split("@")[0] if "@" in username else username
+        if "\\" in short:
+            short = short.split("\\")[-1]
+        # Neutraliser les caractères LDAP spéciaux dans le filtre
+        short = re.sub(r'[\\*\(\)\x00/]', '', short)
+
+        # Utiliser le compte de service si disponible, sinon la connexion de l'utilisateur
+        search_conn = conn
+        bind_dn = cfg.get("ldap_bind_dn", "").strip()
+        bind_pw = cfg.get("ldap_bind_password", "").strip()
+        if bind_dn and bind_pw:
+            try:
+                svc = Connection(server, user=bind_dn, password=bind_pw, auto_bind=True)
+                if svc.bound:
+                    search_conn = svc
+            except Exception:
+                pass
+
+        search_base = allowed_ou or cfg.get("ldap_base_dn", "")
+        search_conn.search(
+            search_base=search_base,
+            search_filter=f"(sAMAccountName={short})",
+            attributes=["memberOf", "distinguishedName"],
+        )
+
+        if not search_conn.entries:
+            # Utilisateur introuvable dans l'OU autorisé
+            return None
+
+        if required_group:
+            member_of = [str(g).strip() for g in search_conn.entries[0].memberOf]
+            if not any(g.lower() == required_group.lower() for g in member_of):
+                # Utilisateur non membre du groupe requis
+                return None
+
+    # Authentification réussie — créer ou récupérer le compte local
     role = cfg.get("ldap_default_role", "auditeur")
     user = db.query(models.User).filter(models.User.username == username).first()
     if not user:

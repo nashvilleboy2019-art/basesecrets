@@ -5,6 +5,8 @@ _PATH = os.path.join("data", "settings.json")
 _DEFAULTS = {
     "company_name": "",
     "logo_ext": "",
+    "primary_color": "#0f172a",
+    "secondary_color": "#4f46e5",
     "ldap_enabled": False,
     "ldap_server": "",
     "ldap_port": 389,
@@ -12,6 +14,8 @@ _DEFAULTS = {
     "ldap_default_role": "auditeur",
     "ldap_bind_dn": "",
     "ldap_bind_password": "",
+    "ldap_allowed_ou": "",
+    "ldap_required_group": "",
 }
 
 

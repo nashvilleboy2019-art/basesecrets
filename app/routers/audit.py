@@ -32,9 +32,11 @@ async def list_sessions(request: Request, db: Session = Depends(get_db)):
 @router.get("/new", response_class=HTMLResponse)
 async def new_session_form(request: Request, db: Session = Depends(get_db)):
     user = require_login(request, db)
+    coffres = [r[0] for r in db.query(models.Secret.coffre).distinct().order_by(models.Secret.coffre).all()]
     return templates.TemplateResponse(request, "audit/new.html", {
         "user": user, "active": "audit",
         "current_year": datetime.utcnow().year,
+        "coffres": coffres,
     })
 
 
@@ -43,16 +45,20 @@ async def create_session(
     request: Request,
     name: str = Form(...),
     year: int = Form(...),
+    coffre: str = Form(""),
     db: Session = Depends(get_db)
 ):
     user = require_login(request, db)
+    coffre_val = coffre.strip() or None
     session = models.AuditSession(
         name=name.strip(), year=year,
+        coffre=coffre_val,
         created_by=user.id, status="open"
     )
     db.add(session)
     db.flush()
-    log_activity(db, user, "Création session audit", "audit", session.id, name)
+    scope = f" (coffre : {coffre_val})" if coffre_val else ""
+    log_activity(db, user, f"Création session audit{scope}", "audit", session.id, name)
     db.commit()
     set_flash(request, f"Session « {name} » créée.")
     return RedirectResponse(f"/audit/{session.id}", status_code=302)
@@ -152,7 +158,10 @@ async def session_report(session_id: int, request: Request, db: Session = Depend
               .order_by(models.AuditCheck.checked_at).all())
 
     scanned_secret_ids = {c.secret_id for c in checks if c.secret_id}
-    all_secrets = db.query(models.Secret).order_by(models.Secret.domaine, models.Secret.libelle).all()
+    q = db.query(models.Secret).filter(models.Secret.archived == False)
+    if session.coffre:
+        q = q.filter(models.Secret.coffre == session.coffre)
+    all_secrets = q.order_by(models.Secret.domaine, models.Secret.libelle).all()
     missing = [s for s in all_secrets if s.id not in scanned_secret_ids]
 
     match_checks = [c for c in checks if c.status == "match"]

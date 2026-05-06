@@ -53,7 +53,7 @@
         <div style="font-size:13px; color:#64748b; margin-top:2px;">Rapport d'audit — {{ session.name }}</div>
       </div>
       <div style="text-align:right; font-size:11px; color:#6b7280;">
-        <div>Année : <strong>{{ session.year }}</strong></div>
+        <div>Année : <strong>{{ session.year }}</strong>{% if session.coffre %} — Coffre : <strong>{{ session.coffre }}</strong>{% endif %}</div>
         {% if session.closed_at %}
         <div>Clôturé le {{ session.closed_at.strftime('%d/%m/%Y à %H:%M') }}</div>
         {% endif %}
@@ -85,7 +85,10 @@
   <div class="flex items-start justify-between mb-5 no-print">
     <div>
       <h1 class="text-xl font-bold text-gray-900">Rapport d'audit</h1>
-      <p class="text-gray-500 text-sm mt-0.5">{{ session.name }} — {{ session.year }}</p>
+      <p class="text-gray-500 text-sm mt-0.5">
+        {{ session.name }} — {{ session.year }}
+        {% if session.coffre %}<span class="ml-2 px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs font-mono">{{ session.coffre }}</span>{% endif %}
+      </p>
       {% if session.closed_at %}
       <p class="text-gray-400 text-xs mt-0.5">Clôturée le {{ session.closed_at.strftime('%d/%m/%Y à %H:%M') }}</p>
       {% endif %}

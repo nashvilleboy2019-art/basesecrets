@@ -14,7 +14,11 @@
         <span class="text-gray-600">{{ session.name }}</span>
       </div>
       <h1 class="text-xl font-bold text-gray-900">{{ session.name }}</h1>
-      <p class="text-gray-400 text-xs mt-0.5">Année {{ session.year }} — Session en cours</p>
+      <p class="text-gray-400 text-xs mt-0.5">
+        Année {{ session.year }}
+        {% if session.coffre %} — Coffre : <span class="font-mono text-gray-600">{{ session.coffre }}</span>{% endif %}
+        — Session en cours
+      </p>
     </div>
     {% if session.status == 'open' %}
     <form method="post" action="/audit/{{ session.id }}/close"

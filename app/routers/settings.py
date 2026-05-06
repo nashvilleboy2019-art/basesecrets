@@ -38,6 +38,23 @@ async def save_general(
     return RedirectResponse("/settings/", status_code=302)
 
 
+@router.post("/theme")
+async def save_theme(
+    request: Request,
+    primary_color: str = Form("#0f172a"),
+    secondary_color: str = Form("#4f46e5"),
+    db: Session = Depends(get_db)
+):
+    require_responsable(request, db)
+    import re
+    _hex = re.compile(r"^#[0-9a-fA-F]{6}$")
+    primary_color = primary_color.strip() if _hex.match(primary_color.strip()) else "#0f172a"
+    secondary_color = secondary_color.strip() if _hex.match(secondary_color.strip()) else "#4f46e5"
+    settings_manager.save({"primary_color": primary_color, "secondary_color": secondary_color})
+    set_flash(request, "Thème mis à jour.")
+    return RedirectResponse("/settings/?tab=theme", status_code=302)
+
+
 @router.post("/logo")
 async def upload_logo(
     request: Request,
@@ -84,6 +101,8 @@ async def save_ldap(
     ldap_default_role: str = Form("auditeur"),
     ldap_bind_dn: str = Form(""),
     ldap_bind_password: str = Form(""),
+    ldap_allowed_ou: str = Form(""),
+    ldap_required_group: str = Form(""),
     db: Session = Depends(get_db)
 ):
     require_responsable(request, db)
@@ -94,6 +113,8 @@ async def save_ldap(
         "ldap_user_template": ldap_user_template.strip() or "{username}@domain.local",
         "ldap_default_role": ldap_default_role if ldap_default_role in ("auditeur", "responsable") else "auditeur",
         "ldap_bind_dn": ldap_bind_dn.strip(),
+        "ldap_allowed_ou": ldap_allowed_ou.strip(),
+        "ldap_required_group": ldap_required_group.strip(),
     }
     if ldap_bind_password:
         update["ldap_bind_password"] = ldap_bind_password

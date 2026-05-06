@@ -31,6 +31,18 @@
         value="{{ current_year }}" min="2000" max="2099"
         class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
     </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1.5">
+        Coffre audité <span class="text-gray-400 font-normal">(optionnel — laissez vide pour auditer tous les coffres)</span>
+      </label>
+      <select name="coffre"
+        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
+        <option value="">— Tous les coffres —</option>
+        {% for c in coffres %}
+        <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
     <div class="flex gap-3 pt-2 border-t border-gray-100">
       <button type="submit"
         class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors">

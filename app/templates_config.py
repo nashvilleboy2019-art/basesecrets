@@ -12,4 +12,20 @@ def _get_logo_url() -> str | None:
     return None
 
 
+def _get_theme_style() -> str:
+    from app import settings_manager
+    cfg = settings_manager.load()
+    primary = cfg.get("primary_color", "#0f172a")
+    secondary = cfg.get("secondary_color", "#4f46e5")
+    return (
+        "<style>"
+        f":root{{--color-sidebar:{primary};--color-accent:{secondary};}}"
+        ".nav-item-active{background-color:var(--color-accent)!important;color:#fff!important;}"
+        ".btn-accent{background-color:var(--color-accent)!important;color:#fff!important;transition:filter .15s;}"
+        ".btn-accent:hover{filter:brightness(0.85);}"
+        "</style>"
+    )
+
+
 templates.env.globals["get_logo_url"] = _get_logo_url
+templates.env.globals["get_theme_style"] = _get_theme_style
