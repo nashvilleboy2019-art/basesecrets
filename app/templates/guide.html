@@ -33,6 +33,9 @@
           <a href="#audit" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Audit annuel</a>
           <a href="#journal" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Journal</a>
           <a href="#comptes" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Comptes</a>
+          <a href="#import" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Import CSV/Excel</a>
+          <a href="#parametres" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Paramètres</a>
+          <a href="#docker" class="block text-gray-600 hover:text-indigo-600 py-0.5">Docker</a>
           <a href="#douchette" class="block text-gray-600 hover:text-indigo-600 py-0.5">Douchette USB</a>
           <a href="#faq" class="block text-gray-600 hover:text-indigo-600 py-0.5">FAQ</a>
         </nav>
@@ -162,6 +165,8 @@
               <tr><td class="px-4 py-2.5 text-gray-700">Modifier un secret</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
               <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Changer un numéro d'enveloppe</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
               <tr><td class="px-4 py-2.5 text-gray-700">Gérer les comptes utilisateurs</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Importer CSV / Excel</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr><td class="px-4 py-2.5 text-gray-700">Paramètres (logo, SSO AD)</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
             </tbody>
           </table>
         </div>
@@ -320,6 +325,115 @@
         </div>
       </section>
 
+      <!-- IMPORT CSV/EXCEL -->
+      <section id="import">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Import CSV / Excel</h2>
+        <div class="space-y-4 text-gray-600">
+          <p>Permet d'alimenter en masse la base depuis un fichier existant (extraction d'Access, Excel RH, etc.).</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Procédure</h3>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Aller dans <strong>Secrets</strong> → <strong>Importer</strong></li>
+              <li>Télécharger le modèle CSV si nécessaire</li>
+              <li>Sélectionner le fichier (.csv, .xlsx ou .xls)</li>
+              <li>Cliquer sur <strong>Importer</strong> — un rapport s'affiche immédiatement</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Colonnes attendues</h3>
+            <div class="overflow-hidden rounded-xl border border-gray-200">
+              <table class="w-full text-xs">
+                <thead><tr class="bg-gray-50 text-gray-500 uppercase tracking-wide border-b"><th class="text-left px-3 py-2 font-medium">Colonne</th><th class="text-left px-3 py-2 font-medium">Obligatoire</th></tr></thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr><td class="px-3 py-2 font-mono text-indigo-700">id_secret</td><td class="px-3 py-2 text-red-500 font-semibold">Oui</td></tr>
+                  <tr class="bg-gray-50"><td class="px-3 py-2 font-mono text-indigo-700">libelle</td><td class="px-3 py-2 text-red-500 font-semibold">Oui</td></tr>
+                  <tr><td class="px-3 py-2 font-mono text-indigo-700">nom_technique</td><td class="px-3 py-2 text-red-500 font-semibold">Oui</td></tr>
+                  <tr class="bg-gray-50"><td class="px-3 py-2 font-mono text-indigo-700">domaine</td><td class="px-3 py-2 text-red-500 font-semibold">Oui</td></tr>
+                  <tr><td class="px-3 py-2 font-mono text-indigo-700">coffre</td><td class="px-3 py-2 text-red-500 font-semibold">Oui</td></tr>
+                  <tr class="bg-gray-50"><td class="px-3 py-2 font-mono text-indigo-700">num_envelope</td><td class="px-3 py-2 text-red-500 font-semibold">Oui</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-blue-800 text-xs space-y-1">
+            <p>Les encodages CSV reconnus : UTF-8, UTF-16, Latin-1, CP1252.</p>
+            <p>Les lignes en doublon (identifiant ou numéro d'enveloppe déjà présents) sont ignorées sans erreur.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PARAMÈTRES -->
+      <section id="parametres">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Paramètres</h2>
+        <div class="space-y-5 text-gray-600">
+          <p>Accessible depuis le menu <strong>Paramètres</strong> (responsables uniquement). Deux onglets : <strong>Général</strong> et <strong>Active Directory</strong>.</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Logo société</h3>
+            <p>Déposez un logo (PNG, JPG, SVG, WEBP — max 2 Mo) depuis l'onglet <strong>Général</strong>. Il sera affiché sur la page de connexion au-dessus du titre BaseSecrets.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">SSO Active Directory (LDAP)</h3>
+            <p>Depuis l'onglet <strong>Active Directory</strong> :</p>
+            <ol class="list-decimal list-inside space-y-1 mt-2">
+              <li>Activer le toggle <strong>SSO Active Directory</strong></li>
+              <li>Renseigner l'adresse du serveur (ex : <code class="bg-gray-100 px-1 rounded font-mono text-xs">ldap://dc01.entreprise.local</code>)</li>
+              <li>Définir le format de connexion : <code class="bg-gray-100 px-1 rounded font-mono text-xs">{username}@entreprise.local</code></li>
+              <li>Choisir le rôle attribué aux nouveaux comptes AD (auditeur par défaut)</li>
+              <li>Cliquer sur <strong>Tester la connexion</strong> pour valider l'accès au serveur</li>
+              <li>Enregistrer</li>
+            </ol>
+            <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-blue-800 text-xs space-y-1">
+              <p>Si l'authentification AD échoue (serveur indisponible, mauvais mot de passe), la connexion bascule automatiquement sur le compte local.</p>
+              <p>Les comptes créés automatiquement depuis AD sont visibles et gérables dans la page <strong>Comptes</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOCKER -->
+      <section id="docker">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Déploiement Docker</h2>
+        <div class="space-y-4 text-gray-600">
+          <p>Un <code class="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">Dockerfile</code> et un <code class="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">docker-compose.yml</code> sont fournis pour un déploiement conteneurisé.</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Démarrage</h3>
+            <div class="bg-slate-800 text-emerald-300 rounded-lg p-4 font-mono text-xs">
+              docker compose up --build -d
+            </div>
+            <p class="text-xs text-gray-500 mt-2">L'application est accessible sur <span class="font-mono bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded text-xs">http://localhost:8000</span> depuis n'importe quelle machine du réseau.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Persistance des données</h3>
+            <p>Les données sont stockées dans deux volumes Docker nommés :</p>
+            <ul class="list-disc list-inside space-y-1 mt-1 text-xs">
+              <li><code class="bg-gray-100 px-1 rounded font-mono">basesecrets_data</code> — base SQLite et paramètres</li>
+              <li><code class="bg-gray-100 px-1 rounded font-mono">basesecrets_uploads</code> — scans des enveloppes et logo</li>
+            </ul>
+            <p class="mt-2 text-xs">Les données survivent aux redémarrages et mises à jour du conteneur.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Variables d'environnement</h3>
+            <div class="overflow-hidden rounded-xl border border-gray-200">
+              <table class="w-full text-xs">
+                <tbody class="divide-y divide-gray-100">
+                  <tr><td class="px-3 py-2 font-mono text-indigo-700">BASESECRETS_HOST</td><td class="px-3 py-2 text-gray-600">Adresse d'écoute (défaut Docker : <code class="bg-gray-100 px-1 rounded">0.0.0.0</code>)</td></tr>
+                  <tr class="bg-gray-50"><td class="px-3 py-2 font-mono text-indigo-700">BASESECRETS_PORT</td><td class="px-3 py-2 text-gray-600">Port (défaut : <code class="bg-gray-100 px-1 rounded">8000</code>)</td></tr>
+                  <tr><td class="px-3 py-2 font-mono text-indigo-700">BASESECRETS_RELOAD</td><td class="px-3 py-2 text-gray-600">Rechargement auto (<code class="bg-gray-100 px-1 rounded">true</code> en dev, <code class="bg-gray-100 px-1 rounded">false</code> en prod)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- DOUCHETTE -->
       <section id="douchette">
         <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Utilisation de la douchette USB</h2>
@@ -345,17 +459,21 @@
 
           {% set faq = [
             ("Où sont stockées les données ?",
-             "Dans un fichier SQLite local : data/secrets.db. Ce fichier contient toutes les données et peut être sauvegardé comme n'importe quel fichier."),
+             "Dans un fichier SQLite local : data/secrets.db. Ce fichier contient toutes les données et peut être sauvegardé comme n'importe quel fichier. En mode Docker, elles sont dans le volume basesecrets_data."),
             ("Comment sauvegarder la base ?",
-             "Copiez simplement le fichier data/secrets.db. Pour une sauvegarde automatique, planifiez une copie vers un emplacement réseau sécurisé."),
+             "Mode classique : copiez data/secrets.db et uploads/. Mode Docker : exportez les volumes avec docker run --rm -v basesecrets_data:/data alpine tar czf - /data > backup.tar.gz"),
             ("Peut-on modifier l'identifiant d'un secret ?",
              "Non, l'identifiant est immuable après création. C'est une contrainte intentionnelle pour garantir l'intégrité de la traçabilité."),
             ("Comment changer un mot de passe utilisateur ?",
              "Via le menu Comptes (responsable uniquement) : cliquer sur Modifier à côté du compte, saisir le nouveau mot de passe et valider. Laisser le champ vide pour ne pas le modifier."),
+            ("Mon fichier CSV n'est pas reconnu, que faire ?",
+             "Vérifiez que les colonnes obligatoires sont présentes (id_secret, libelle, nom_technique, domaine, coffre, num_envelope) et que le fichier est encodé en UTF-8. Téléchargez le modèle depuis la page Import pour partir du bon format."),
+            ("Le SSO Active Directory ne fonctionne pas, que vérifier ?",
+             "1) Utilisez le bouton Tester la connexion dans Paramètres pour vérifier la joinabilité du serveur. 2) Vérifiez le format du DN utilisateur (ex : {username}@entreprise.local). 3) En cas d'échec LDAP, la connexion locale reste toujours disponible en secours."),
             ("L'application est-elle accessible depuis d'autres postes ?",
-             "Par défaut, elle n'écoute que sur 127.0.0.1 (localhost). Pour la rendre accessible sur le réseau local, modifiez run.py : remplacez host='127.0.0.1' par host='0.0.0.0'. Assurez-vous que l'accès est restreint par le pare-feu."),
+             "Mode classique : définissez la variable BASESECRETS_HOST=0.0.0.0 avant de lancer python run.py. Mode Docker : c'est déjà le cas par défaut — mappez simplement le port souhaité dans docker-compose.yml."),
             ("Que faire si l'application ne démarre pas ?",
-             "Vérifiez que Python 3.10+ est installé, que les dépendances sont installées (pip install -r requirements.txt) et que le port 8000 n'est pas déjà utilisé.")
+             "Vérifiez que Python 3.10+ est installé, que les dépendances sont installées (pip install -r requirements.txt) et que le port 8000 n'est pas déjà utilisé. En Docker : docker compose logs basesecrets.")
           ] %}
 
           {% for question, reponse in faq %}
