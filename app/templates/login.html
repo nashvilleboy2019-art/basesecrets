@@ -7,8 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-900 min-h-screen flex items-center justify-center">
+  {% set logo_url = get_logo_url() %}
   <div class="w-full max-w-sm">
     <div class="text-center mb-8">
+      {% if logo_url %}
+      <img src="{{ logo_url }}" alt="Logo" class="h-14 w-auto mx-auto mb-4 object-contain">
+      {% endif %}
       <div class="text-white text-3xl font-bold tracking-tight mb-1">BaseSecrets</div>
       <div class="text-slate-400 text-sm">Gestion des secrets d'entreprise</div>
     </div>

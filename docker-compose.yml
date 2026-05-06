@@ -1,0 +1,16 @@
+services:
+  basesecrets:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - basesecrets_data:/app/data
+      - basesecrets_uploads:/app/uploads
+    restart: unless-stopped
+    environment:
+      - BASESECRETS_HOST=0.0.0.0
+      - BASESECRETS_RELOAD=false
+
+volumes:
+  basesecrets_data:
+  basesecrets_uploads:

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request, Depends, Form, UploadFile, File, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from datetime import datetime
-import os, uuid, json
+import os, uuid, json, csv, io
 
 from app.database import get_db
 from app import models
@@ -134,6 +134,152 @@ async def create_secret(
 
     set_flash(request, f"Secret « {libelle} » créé avec succès.")
     return RedirectResponse(f"/secrets/{secret.id}", status_code=302)
+
+
+@router.get("/import/template.csv")
+async def import_template():
+    content = (
+        "id_secret,libelle,nom_technique,domaine,coffre,num_envelope\n"
+        "LDAP_ADMIN,Admin LDAP,srv-ldap01,Active Directory,Coffre 1,ENV-001\n"
+        "SQL_SA,SA SQL Server,srv-sql01,Bases de données,Coffre 1,ENV-002\n"
+    )
+    return Response(
+        content=content.encode("utf-8-sig"),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=modele_import_secrets.csv"},
+    )
+
+
+@router.get("/import", response_class=HTMLResponse)
+async def import_form(request: Request, db: Session = Depends(get_db)):
+    user = require_responsable(request, db)
+    return templates.TemplateResponse(request, "secrets/import.html", {
+        "user": user, "active": "secrets",
+        "results": None, "error": None,
+    })
+
+
+@router.post("/import", response_class=HTMLResponse)
+async def import_secrets(
+    request: Request,
+    import_file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    user = require_responsable(request, db)
+    fname = (import_file.filename or "").lower()
+
+    if not (fname.endswith(".csv") or fname.endswith(".xlsx") or fname.endswith(".xls")):
+        return templates.TemplateResponse(request, "secrets/import.html", {
+            "user": user, "active": "secrets", "results": None,
+            "error": "Format non supporté. Utilisez CSV ou Excel (.xlsx, .xls).",
+        })
+
+    content = await import_file.read()
+    try:
+        rows = _parse_import(fname, content)
+    except Exception as e:
+        return templates.TemplateResponse(request, "secrets/import.html", {
+            "user": user, "active": "secrets", "results": None,
+            "error": f"Erreur de lecture : {e}",
+        })
+
+    if not rows:
+        return templates.TemplateResponse(request, "secrets/import.html", {
+            "user": user, "active": "secrets", "results": None,
+            "error": "Le fichier est vide ou ne contient pas de données.",
+        })
+
+    results = _process_import(db, user, rows)
+    db.commit()
+
+    return templates.TemplateResponse(request, "secrets/import.html", {
+        "user": user, "active": "secrets",
+        "results": results, "error": None,
+    })
+
+
+def _parse_import(fname: str, content: bytes) -> list[dict]:
+    if fname.endswith(".csv"):
+        for enc in ("utf-8-sig", "utf-8", "latin-1", "cp1252"):
+            try:
+                text = content.decode(enc)
+                reader = csv.DictReader(io.StringIO(text))
+                return [dict(r) for r in reader]
+            except UnicodeDecodeError:
+                continue
+        raise ValueError("Encodage non reconnu. Enregistrez le CSV en UTF-8.")
+    else:
+        import openpyxl
+        wb = openpyxl.load_workbook(io.BytesIO(content), read_only=True)
+        ws = wb.active
+        headers, rows = None, []
+        for row in ws.iter_rows(values_only=True):
+            vals = [str(c or "").strip() for c in row]
+            if not any(vals):
+                continue
+            if headers is None:
+                headers = vals
+            else:
+                rows.append(dict(zip(headers, vals)))
+        wb.close()
+        return rows
+
+
+def _process_import(db, user, rows: list[dict]) -> dict:
+    imported, skipped, errors = [], [], []
+
+    for i, raw in enumerate(rows, start=2):
+        norm = {k.lower().strip().replace(" ", "_"): (v or "").strip() for k, v in raw.items()}
+
+        def get(*aliases):
+            for a in aliases:
+                if norm.get(a):
+                    return norm[a]
+            return ""
+
+        id_secret    = get("id_secret", "identifiant", "id")
+        libelle      = get("libelle", "libellé", "label", "nom")
+        num_envelope = get("num_envelope", "num_enveloppe", "numero_enveloppe", "enveloppe", "envelope", "numero", "n°")
+        nom_technique = get("nom_technique", "porteur", "technique", "systeme")
+        domaine      = get("domaine", "domain")
+        coffre       = get("coffre", "coffre_fort", "safe")
+
+        if not id_secret or not libelle or not num_envelope or not nom_technique or not domaine or not coffre:
+            errors.append({
+                "row": i,
+                "data": " / ".join(filter(None, [id_secret, libelle, num_envelope])) or "—",
+                "reason": "Champs obligatoires manquants (id_secret, libelle, nom_technique, domaine, coffre, num_envelope)",
+            })
+            continue
+
+        if db.query(models.Secret).filter(models.Secret.id_secret == id_secret).first():
+            skipped.append({"row": i, "data": f"{id_secret} — {libelle}", "reason": "Identifiant déjà existant"})
+            continue
+
+        if db.query(models.Secret).filter(models.Secret.num_envelope == num_envelope).first():
+            skipped.append({"row": i, "data": f"{id_secret} — {libelle}", "reason": f"N° enveloppe {num_envelope} déjà utilisé"})
+            continue
+
+        secret = models.Secret(
+            id_secret=id_secret, libelle=libelle,
+            nom_technique=nom_technique, domaine=domaine,
+            coffre=coffre, num_envelope=num_envelope,
+            created_by=user.id, updated_by=user.id,
+        )
+        db.add(secret)
+        db.flush()
+        log_history(db, secret.id, "Import", user.id, new_values={
+            "id_secret": id_secret, "libelle": libelle, "num_envelope": num_envelope,
+        })
+        log_activity(db, user, "Import secret", "secret", secret.id, libelle)
+        imported.append({"row": i, "data": f"{id_secret} — {libelle} ({num_envelope})"})
+
+    return {
+        "total": len(rows),
+        "imported": imported,
+        "skipped": skipped,
+        "errors": errors,
+    }
 
 
 @router.get("/{secret_id}", response_class=HTMLResponse)

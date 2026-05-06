@@ -8,7 +8,7 @@ import os
 
 from app.database import get_db
 from app import models, auth
-from app.routers import secrets, audit, activity, users
+from app.routers import secrets, audit, activity, users, settings as settings_router
 from app.templates_config import templates
 from app.utils import get_flash, log_activity, require_login
 
@@ -29,6 +29,7 @@ app.include_router(secrets.router, prefix="/secrets")
 app.include_router(audit.router, prefix="/audit")
 app.include_router(activity.router, prefix="/activity")
 app.include_router(users.router, prefix="/users")
+app.include_router(settings_router.router, prefix="/settings")
 
 
 @app.exception_handler(HTTPException)

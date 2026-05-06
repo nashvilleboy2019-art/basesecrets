@@ -15,5 +15,10 @@ if __name__ == "__main__":
     db = SessionLocal()
     create_default_users(db)
     db.close()
-    print("\n  BaseSecrets démarré sur http://127.0.0.1:8000\n")
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+
+    host = os.environ.get("BASESECRETS_HOST", "127.0.0.1")
+    port = int(os.environ.get("BASESECRETS_PORT", "8000"))
+    reload = os.environ.get("BASESECRETS_RELOAD", "true").lower() != "false"
+
+    print(f"\n  BaseSecrets démarré sur http://{host}:{port}\n")
+    uvicorn.run("app.main:app", host=host, port=port, reload=reload)

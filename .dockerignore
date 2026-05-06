@@ -1,0 +1,14 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+data/
+uploads/
+static/
+basesecrets.zip
+basesecrets_dist/
+.vscode/
+.idea/
+*.md
+install.txt
