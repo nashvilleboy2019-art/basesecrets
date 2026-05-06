@@ -1,5 +1,10 @@
 # BaseSecrets
 
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-009688?logo=fastapi&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-local-003B57?logo=sqlite&logoColor=white)
+![License](https://img.shields.io/badge/licence-MIT-green)
+
 Portail de gestion des secrets d'entreprise (mots de passe, clés d'API, certificats…) stockés dans des enveloppes scellées en coffre-fort.
 
 Déploiement local Windows, aucune dépendance cloud.
@@ -79,3 +84,7 @@ basesecrets/
 ## Douchette USB
 
 La douchette fonctionne en mode clavier : aucun pilote requis. Elle tape le numéro d'enveloppe puis envoie `Entrée`. Les pages d'audit et de changement d'enveloppe focalisent automatiquement le champ de saisie.
+
+## Licence
+
+Distribué sous licence [MIT](LICENSE) — libre d'utilisation, de modification et de redistribution.
