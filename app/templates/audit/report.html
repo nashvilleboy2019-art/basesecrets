@@ -1,18 +1,88 @@
 {% extends "base.html" %}
 {% block title %}Rapport — {{ session.name }}{% endblock %}
 
-{% block content %}
-<div class="p-6 max-w-5xl mx-auto">
+{% block head %}
+<style>
+  @media print {
+    /* Masquer tout l'UI sauf le contenu du rapport */
+    aside, .no-print { display: none !important; }
+    body { background: white !important; overflow: visible !important; }
+    #app-layout { display: block !important; overflow: visible !important; }
+    #content-area { overflow: visible !important; }
+    main { overflow: visible !important; }
 
-  <div class="flex items-center gap-2 text-xs text-gray-400 mb-4">
-    <a href="/audit" class="hover:text-indigo-600">Audit</a>
-    <span>/</span>
-    <span class="text-gray-600">{{ session.name }}</span>
-    <span>/</span>
-    <span class="text-gray-600">Rapport</span>
+    /* En-tête d'impression */
+    #print-header { display: block !important; }
+
+    /* Sauts de page */
+    .print-break { page-break-before: always; }
+
+    /* Tables : bordures visibles, pas de hover */
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #e5e7eb; padding: 6px 10px; font-size: 11px; }
+    thead tr { background: #f9fafb !important; }
+    tr:hover { background: transparent !important; }
+
+    /* Cartes de stats */
+    .stat-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; text-align: center; display: inline-block; width: 22%; margin: 0 1%; }
+
+    /* Liens non soulignés */
+    a { color: inherit; text-decoration: none; }
+
+    @page {
+      size: A4 portrait;
+      margin: 1.5cm 1.5cm 2cm 1.5cm;
+      @bottom-center {
+        content: "Page " counter(page) " / " counter(pages);
+        font-size: 10px;
+        color: #6b7280;
+      }
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 max-w-5xl mx-auto" id="content-area">
+
+  <!-- En-tête visible uniquement à l'impression -->
+  <div id="print-header" style="display:none;" class="mb-6 pb-4 border-b-2 border-gray-800">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="font-size:20px; font-weight:bold; color:#1e293b;">BaseSecrets</div>
+        <div style="font-size:13px; color:#64748b; margin-top:2px;">Rapport d'audit — {{ session.name }}</div>
+      </div>
+      <div style="text-align:right; font-size:11px; color:#6b7280;">
+        <div>Année : <strong>{{ session.year }}</strong></div>
+        {% if session.closed_at %}
+        <div>Clôturé le {{ session.closed_at.strftime('%d/%m/%Y à %H:%M') }}</div>
+        {% endif %}
+        <div>Imprimé le <span id="print-date"></span></div>
+      </div>
+    </div>
   </div>
 
-  <div class="flex items-start justify-between mb-5">
+  <!-- Navigation + actions -->
+  <div class="flex items-center justify-between mb-5 no-print">
+    <div class="flex items-center gap-2 text-xs text-gray-400">
+      <a href="/audit" class="hover:text-indigo-600">Audit</a>
+      <span>/</span>
+      <span class="text-gray-600">{{ session.name }}</span>
+      <span>/</span>
+      <span class="text-gray-600">Rapport</span>
+    </div>
+    <button onclick="imprimerRapport()"
+            class="flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-sm font-medium rounded-lg transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+      </svg>
+      Imprimer le rapport
+    </button>
+  </div>
+
+  <!-- Titre (visible à l'écran) -->
+  <div class="flex items-start justify-between mb-5 no-print">
     <div>
       <h1 class="text-xl font-bold text-gray-900">Rapport d'audit</h1>
       <p class="text-gray-500 text-sm mt-0.5">{{ session.name }} — {{ session.year }}</p>
@@ -23,6 +93,11 @@
     {% if session.status == 'open' %}
     <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium">Session en cours</span>
     {% endif %}
+  </div>
+
+  <!-- Titre impression uniquement -->
+  <div class="hidden print:block mb-4">
+    <h1 style="font-size:18px; font-weight:bold; color:#111827; margin:0;">Rapport d'audit — {{ session.name }} ({{ session.year }})</h1>
   </div>
 
   <!-- Summary cards -->
@@ -61,7 +136,7 @@
 
   <!-- Unknown envelopes -->
   {% if unknown_checks %}
-  <div class="bg-white rounded-xl shadow-sm border border-amber-100 overflow-hidden mb-4">
+  <div class="bg-white rounded-xl shadow-sm border border-amber-100 overflow-hidden mb-4 print-break">
     <div class="px-4 py-3 bg-amber-50 border-b border-amber-100">
       <h2 class="font-semibold text-amber-800 text-sm">
         Enveloppes inconnues ({{ unknown_checks|length }})
@@ -91,7 +166,7 @@
 
   <!-- Missing secrets -->
   {% if missing %}
-  <div class="bg-white rounded-xl shadow-sm border border-red-100 overflow-hidden mb-4">
+  <div class="bg-white rounded-xl shadow-sm border border-red-100 overflow-hidden mb-4 {% if unknown_checks %}{% else %}print-break{% endif %}">
     <div class="px-4 py-3 bg-red-50 border-b border-red-100">
       <h2 class="font-semibold text-red-800 text-sm">
         Secrets non scannés ({{ missing|length }})
@@ -124,7 +199,7 @@
   {% endif %}
 
   <!-- Conformes -->
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden print-break">
     <div class="px-4 py-3 border-b border-gray-100">
       <h2 class="font-semibold text-gray-700 text-sm">Enveloppes conformes ({{ match_checks|length }})</h2>
     </div>
@@ -155,4 +230,17 @@
   </div>
 
 </div>
+
+<script>
+function imprimerRapport() {
+  // Injecter la date d'impression dans l'en-tête
+  const el = document.getElementById('print-date');
+  if (el) {
+    const now = new Date();
+    el.textContent = now.toLocaleDateString('fr-FR') + ' à ' +
+      now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+  window.print();
+}
+</script>
 {% endblock %}

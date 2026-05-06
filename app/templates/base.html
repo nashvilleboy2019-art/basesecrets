@@ -6,8 +6,9 @@
   <title>{% block title %}BaseSecrets{% endblock %}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-100 h-screen flex overflow-hidden text-sm text-gray-800">
+<body id="app-layout" class="bg-gray-100 h-screen flex overflow-hidden text-sm text-gray-800">
 
   <!-- Sidebar -->
   <aside class="w-52 bg-slate-900 text-white flex flex-col flex-shrink-0">
