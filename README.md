@@ -2,7 +2,7 @@
 
 Portail de gestion des secrets d'entreprise (mots de passe, clés d'API, certificats…) stockés dans des enveloppes scellées en coffre-fort.
 
-Remplace une base Access obsolète. Déploiement local Windows, aucune dépendance cloud.
+Déploiement local Windows, aucune dépendance cloud.
 
 ---
 
