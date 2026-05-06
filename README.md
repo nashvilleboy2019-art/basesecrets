@@ -15,12 +15,14 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 ## Fonctionnalités
 
 - **Registre des secrets** — référentiel centralisé avec recherche full-text (libellé, identifiant, nom technique, numéro d'enveloppe actuel et anciens numéros)
+- **Archivage** — désactiver un secret obsolète sans perdre la traçabilité ; les archivés sont masqués par défaut et exclus des audits
 - **Import CSV / Excel** — import en masse depuis un fichier `.csv` ou `.xlsx` avec rapport détaillé (importés / doublons / erreurs)
 - **Changement d'enveloppe** — flux dédié avec traçabilité complète : ancien numéro, nouveau numéro, opérateur, date, note optionnelle
-- **Audit annuel** — session de scan en temps réel avec douchette USB code-barres ; rapport de conformité imprimable
-- **Journal d'activité** — toutes les actions tracées (connexions, modifications, audits, imports)
+- **Audit annuel par coffre** — session de scan en temps réel avec douchette USB ; périmètre limité à un coffre précis ; rapport de conformité imprimable (manquants filtrés par coffre, archivés exclus)
+- **Journal d'activité** — toutes les actions tracées (connexions, modifications, audits, imports, archivages)
 - **Gestion des comptes** — création, modification, suppression avec protection du dernier responsable
-- **SSO Active Directory** — authentification LDAP avec fallback local ; création automatique des comptes AD
+- **SSO Active Directory** — authentification LDAP avec restriction par OU et/ou groupe AD ; fallback local ; création automatique des comptes
+- **Thème couleurs** — personnalisation de la couleur principale (sidebar) et secondaire (boutons/accents) depuis les paramètres
 - **Logo société** — personnalisation de la page de connexion
 - **Guide intégré** — accessible sur `/guide` sans authentification
 
@@ -33,10 +35,11 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 | Audit annuel + impression rapport | ✓ | ✓ |
 | Journal d'activité | ✓ | ✓ |
 | Créer / modifier un secret | — | ✓ |
+| Archiver / désarchiver un secret | — | ✓ |
 | Importer CSV / Excel | — | ✓ |
 | Changer un numéro d'enveloppe | — | ✓ |
 | Gérer les comptes | — | ✓ |
-| Paramètres (logo, SSO AD) | — | ✓ |
+| Paramètres (logo, thème, SSO AD) | — | ✓ |
 
 ## Stack technique
 
@@ -111,7 +114,17 @@ basesecrets/
 
 ## Douchette USB
 
-La douchette fonctionne en mode clavier : aucun pilote requis. Elle tape le numéro d'enveloppe puis envoie `Entrée`. Les pages d'audit et de changement d'enveloppe focalisent automatiquement le champ de saisie.
+La douchette fonctionne en mode clavier : aucun pilote requis. Elle tape le numéro d'enveloppe puis envoie `Entrée`. Les pages d'audit, de création de secret et de changement d'enveloppe focalisent automatiquement le champ de saisie.
+
+## Archivage des secrets
+
+Un secret archivé conserve toute sa traçabilité (historique, audits passés) mais n'apparaît plus dans l'inventaire actif ni dans les "manquants" d'un audit futur. Un bouton **Désarchiver** permet de le réactiver. L'accès aux archivés reste possible via le filtre "Afficher les archivés" dans la liste.
+
+## Thème couleurs
+
+Depuis **Paramètres → Thème**, les responsables peuvent personnaliser :
+- **Couleur principale** — fond de la sidebar et de la page de connexion (défaut : bleu nuit `#0f172a`)
+- **Couleur secondaire** — boutons d'action et élément de navigation actif (défaut : indigo `#4f46e5`)
 
 ## Licence
 

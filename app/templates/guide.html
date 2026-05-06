@@ -29,6 +29,7 @@
           <a href="#demarrage" class="block text-gray-600 hover:text-indigo-600 py-0.5">Démarrage</a>
           <a href="#roles" class="block text-gray-600 hover:text-indigo-600 py-0.5">Rôles</a>
           <a href="#secrets" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Secrets</a>
+          <a href="#archivage" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Archivage</a>
           <a href="#envelope" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Changement enveloppe</a>
           <a href="#audit" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Audit annuel</a>
           <a href="#journal" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Journal</a>
@@ -163,10 +164,11 @@
               <tr><td class="px-4 py-2.5 text-gray-700">Consulter le journal</td><td class="text-center text-emerald-600 font-bold">✓</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
               <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Créer un secret</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
               <tr><td class="px-4 py-2.5 text-gray-700">Modifier un secret</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
-              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Changer un numéro d'enveloppe</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
-              <tr><td class="px-4 py-2.5 text-gray-700">Gérer les comptes utilisateurs</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
-              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Importer CSV / Excel</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
-              <tr><td class="px-4 py-2.5 text-gray-700">Paramètres (logo, SSO AD)</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Archiver / désarchiver un secret</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr><td class="px-4 py-2.5 text-gray-700">Changer un numéro d'enveloppe</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Gérer les comptes utilisateurs</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr><td class="px-4 py-2.5 text-gray-700">Importer CSV / Excel</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
+              <tr class="bg-gray-50"><td class="px-4 py-2.5 text-gray-700">Paramètres (logo, thème, SSO AD)</td><td class="text-center text-red-400">✗</td><td class="text-center text-emerald-600 font-bold">✓</td></tr>
             </tbody>
           </table>
         </div>
@@ -197,12 +199,39 @@
 
           <div>
             <h3 class="font-semibold text-gray-800 mb-2">Recherche</h3>
-            <p>La barre de recherche filtre simultanément sur le libellé, l'identifiant, le nom technique et le numéro d'enveloppe. Les menus déroulants permettent de filtrer par domaine ou coffre.</p>
+            <p>La barre de recherche filtre simultanément sur le libellé, l'identifiant, le nom technique et le numéro d'enveloppe. Les menus déroulants permettent de filtrer par domaine ou coffre. Par défaut, les secrets archivés sont masqués — un lien "Afficher les archivés" permet d'y accéder.</p>
           </div>
 
           <div>
             <h3 class="font-semibold text-gray-800 mb-2">Historique</h3>
-            <p>Chaque modification est tracée dans la fiche du secret : création, modification des informations, changement d'enveloppe. L'ancienne et la nouvelle valeur sont conservées indéfiniment.</p>
+            <p>Chaque modification est tracée dans la fiche du secret : création, modification des informations, changement d'enveloppe, archivage. L'ancienne et la nouvelle valeur sont conservées indéfiniment.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ARCHIVAGE -->
+      <section id="archivage">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Archivage d'un secret</h2>
+        <div class="space-y-4 text-gray-600">
+          <p>L'archivage permet de désactiver un secret qui n'est plus utilisé (mot de passe révoqué, système décommissionné…) tout en conservant la traçabilité complète.</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Archiver un secret</h3>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Ouvrir la fiche du secret</li>
+              <li>Cliquer sur <strong>Archiver</strong> (responsable uniquement)</li>
+              <li>Confirmer l'action — le secret est immédiatement masqué de l'inventaire actif</li>
+            </ol>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Désarchiver un secret</h3>
+            <p>Depuis la fiche d'un secret archivé (accessible via le filtre "Afficher les archivés" dans la liste), cliquer sur <strong>Désarchiver</strong>. Le secret réapparaît dans l'inventaire actif.</p>
+          </div>
+
+          <div class="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-blue-800 text-xs space-y-1">
+            <p>Les secrets archivés sont automatiquement exclus de la liste "Secrets non scannés" dans les rapports d'audit.</p>
+            <p>L'historique complet (créations, changements d'enveloppe, audits passés) reste consultable même après archivage.</p>
           </div>
         </div>
       </section>
@@ -241,8 +270,9 @@
             <h3 class="font-semibold text-gray-800 mb-2">Déroulement</h3>
             <ol class="list-decimal list-inside space-y-2">
               <li>Aller dans <strong>Audit annuel</strong> → <strong>Nouvelle session</strong></li>
-              <li>Nommer la session (ex : <em>Audit 2025</em>) et valider</li>
-              <li>L'interface de scan s'ouvre : l'input est automatiquement focalisé</li>
+              <li>Nommer la session (ex : <em>Audit 2025</em>), indiquer l'année</li>
+              <li>Optionnel : sélectionner le <strong>coffre audité</strong> dans le menu déroulant — le rapport "manquants" ne montrera alors que les secrets de ce coffre</li>
+              <li>Valider — l'interface de scan s'ouvre, l'input est automatiquement focalisé</li>
               <li>Scanner chaque enveloppe l'une après l'autre avec la douchette</li>
               <li>Chaque scan affiche immédiatement le résultat (voir tableau)</li>
               <li>À la fin, cliquer sur <strong>Clôturer et voir le rapport</strong></li>
@@ -273,7 +303,7 @@
             <ul class="list-disc list-inside space-y-1 mt-1">
               <li><strong>Enveloppes conformes</strong> — scannées et présentes en base</li>
               <li><strong>Enveloppes inconnues</strong> — scannées mais absentes de la base</li>
-              <li><strong>Secrets non scannés</strong> — présents en base mais enveloppe non scannée (potentiellement manquants)</li>
+              <li><strong>Secrets non scannés</strong> — présents en base mais non scannés (potentiellement manquants), filtrés par coffre si défini et hors archivés</li>
             </ul>
           </div>
         </div>
@@ -369,11 +399,21 @@
       <section id="parametres">
         <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Paramètres</h2>
         <div class="space-y-5 text-gray-600">
-          <p>Accessible depuis le menu <strong>Paramètres</strong> (responsables uniquement). Deux onglets : <strong>Général</strong> et <strong>Active Directory</strong>.</p>
+          <p>Accessible depuis le menu <strong>Paramètres</strong> (responsables uniquement). Trois onglets : <strong>Général</strong>, <strong>Thème</strong> et <strong>Active Directory</strong>.</p>
 
           <div>
             <h3 class="font-semibold text-gray-800 mb-2">Logo société</h3>
             <p>Déposez un logo (PNG, JPG, SVG, WEBP — max 2 Mo) depuis l'onglet <strong>Général</strong>. Il sera affiché sur la page de connexion au-dessus du titre BaseSecrets.</p>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Thème couleurs</h3>
+            <p>Depuis l'onglet <strong>Thème</strong>, personnalisez l'apparence de l'interface :</p>
+            <ul class="list-disc list-inside space-y-1 mt-2">
+              <li><strong>Couleur principale</strong> — fond de la sidebar et de la page de connexion</li>
+              <li><strong>Couleur secondaire</strong> — boutons d'action, élément de menu actif, avatar utilisateur</li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-2">Un bouton "Réinitialiser" remet les couleurs d'origine (bleu nuit / indigo).</p>
           </div>
 
           <div>
@@ -383,12 +423,15 @@
               <li>Activer le toggle <strong>SSO Active Directory</strong></li>
               <li>Renseigner l'adresse du serveur (ex : <code class="bg-gray-100 px-1 rounded font-mono text-xs">ldap://dc01.entreprise.local</code>)</li>
               <li>Définir le format de connexion : <code class="bg-gray-100 px-1 rounded font-mono text-xs">{username}@entreprise.local</code></li>
+              <li>Optionnel : renseigner le <strong>compte de service</strong> (DN + mot de passe) pour les recherches avancées</li>
+              <li>Optionnel : renseigner l'<strong>OU autorisée</strong> — seuls les comptes trouvés dans cette OU pourront se connecter (ex : <code class="bg-gray-100 px-1 rounded font-mono text-xs">OU=BaseSecrets,DC=entreprise,DC=local</code>)</li>
+              <li>Optionnel : renseigner le <strong>groupe AD requis</strong> — l'utilisateur doit en être membre (attribut <code class="bg-gray-100 px-1 rounded font-mono text-xs">memberOf</code>)</li>
               <li>Choisir le rôle attribué aux nouveaux comptes AD (auditeur par défaut)</li>
               <li>Cliquer sur <strong>Tester la connexion</strong> pour valider l'accès au serveur</li>
               <li>Enregistrer</li>
             </ol>
             <div class="mt-3 bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-blue-800 text-xs space-y-1">
-              <p>Si l'authentification AD échoue (serveur indisponible, mauvais mot de passe), la connexion bascule automatiquement sur le compte local.</p>
+              <p>Si l'authentification AD échoue (serveur indisponible, OU non autorisée, groupe manquant), la connexion bascule automatiquement sur le compte local.</p>
               <p>Les comptes créés automatiquement depuis AD sont visibles et gérables dans la page <strong>Comptes</strong>.</p>
             </div>
           </div>
@@ -473,7 +516,13 @@
             ("L'application est-elle accessible depuis d'autres postes ?",
              "Mode classique : définissez la variable BASESECRETS_HOST=0.0.0.0 avant de lancer python run.py. Mode Docker : c'est déjà le cas par défaut — mappez simplement le port souhaité dans docker-compose.yml."),
             ("Que faire si l'application ne démarre pas ?",
-             "Vérifiez que Python 3.10+ est installé, que les dépendances sont installées (pip install -r requirements.txt) et que le port 8000 n'est pas déjà utilisé. En Docker : docker compose logs basesecrets.")
+             "Vérifiez que Python 3.10+ est installé, que les dépendances sont installées (pip install -r requirements.txt) et que le port 8000 n'est pas déjà utilisé. En Docker : docker compose logs basesecrets."),
+            ("Comment archiver un secret sans le supprimer ?",
+             "Depuis la fiche du secret, cliquez sur Archiver (responsable uniquement). Le secret disparaît de l'inventaire actif et des rapports d'audit futurs, mais reste consultable via le filtre Afficher les archivés dans la liste. L'historique complet est préservé."),
+            ("Comment limiter la connexion AD à certains utilisateurs ?",
+             "Dans Paramètres → Active Directory, renseignez l'OU autorisée (ex : OU=BaseSecrets,DC=entreprise,DC=local) pour n'autoriser que les comptes de cette unité organisationnelle. Vous pouvez aussi définir un groupe AD requis : seuls les membres de ce groupe (attribut memberOf) pourront se connecter."),
+            ("Comment personnaliser les couleurs de l'interface ?",
+             "Allez dans Paramètres → Thème. Deux selecteurs de couleur : la couleur principale pour la sidebar et la page de connexion, la couleur secondaire pour les boutons et l'élément actif. Cliquez sur Réinitialiser pour revenir aux couleurs d'origine.")
           ] %}
 
           {% for question, reponse in faq %}
