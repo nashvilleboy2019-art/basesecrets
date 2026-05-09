@@ -26,6 +26,7 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 
 ## Fonctionnalités
 
+- **Tableau de bord statistique** — vue d'ensemble avec cards (actifs, archivés, domaines, coffres, audits, utilisateurs), graphique mixte secrets/mois (barres ajoutés + archivés + courbe cumul actifs), donut actifs/archivés, top 5 actions, progression des audits en cours, activité récente avec badges colorés
 - **Registre des secrets** — référentiel centralisé avec recherche full-text (libellé, identifiant, nom technique, numéro d'enveloppe actuel et anciens numéros)
 - **Archivage** — désactiver un secret obsolète sans perdre la traçabilité ; les archivés sont masqués par défaut et exclus des audits
 - **Import CSV / Excel** — import en masse depuis un fichier `.csv` ou `.xlsx` avec rapport détaillé (importés / doublons / erreurs)
@@ -36,6 +37,7 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 - **SSO Active Directory** — authentification LDAP avec restriction par OU et/ou groupe AD ; fallback local ; création automatique des comptes
 - **Thème couleurs** — personnalisation de la couleur principale (sidebar) et secondaire (boutons/accents) depuis les paramètres
 - **Logo société** — personnalisation de la page de connexion
+- **Zone dangereuse** — purge totale des secrets avec confirmation par phrase (responsable uniquement)
 - **Guide intégré** — accessible sur `/guide` sans authentification
 
 ## Rôles
@@ -52,11 +54,12 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 | Changer un numéro d'enveloppe | — | ✓ |
 | Gérer les comptes | — | ✓ |
 | Paramètres (logo, thème, SSO AD) | — | ✓ |
+| Purger tous les secrets | — | ✓ |
 
 ## Stack technique
 
 - **Backend** : Python 3.10+ · FastAPI · SQLAlchemy 2 · SQLite
-- **Frontend** : Jinja2 · Tailwind CSS (CDN) · Alpine.js v3
+- **Frontend** : Jinja2 · Tailwind CSS (CDN) · Alpine.js v3 · Chart.js v4
 - **Auth** : sessions Starlette · bcrypt · ldap3 (SSO AD optionnel)
 - **Import** : csv (stdlib) · openpyxl (Excel)
 
@@ -137,6 +140,10 @@ Un secret archivé conserve toute sa traçabilité (historique, audits passés) 
 Depuis **Paramètres → Thème**, les responsables peuvent personnaliser :
 - **Couleur principale** — fond de la sidebar et de la page de connexion (défaut : bleu nuit `#0f172a`)
 - **Couleur secondaire** — boutons d'action et élément de navigation actif (défaut : indigo `#4f46e5`)
+
+## Zone dangereuse
+
+Depuis **Paramètres → Zone dangereuse**, les responsables peuvent purger la totalité des secrets (secrets, historique, sessions d'audit). Une confirmation par saisie de la phrase exacte `je supprime tous les secrets` est exigée avant exécution. L'action est irréversible.
 
 ## Scripts de démonstration
 

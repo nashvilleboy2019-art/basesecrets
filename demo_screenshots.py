@@ -95,8 +95,9 @@ def run():
             ("14_settings_general", f"{BASE}/settings/",                            "Parametres generaux",          False),
             ("15_settings_theme",   f"{BASE}/settings/?tab=theme",                  "Parametres theme",             False),
             ("16_settings_ldap",    f"{BASE}/settings/?tab=ldap",                   "Parametres Active Directory",  False),
-            ("17_import",           f"{BASE}/secrets/import",                       "Import CSV/Excel",             False),
-            ("18_guide",            f"{BASE}/guide",                                "Guide d'utilisation",          False),
+            ("17_settings_danger",  f"{BASE}/settings/?tab=danger",                 "Zone dangereuse",              False),
+            ("18_import",           f"{BASE}/secrets/import",                       "Import CSV/Excel",             False),
+            ("19_guide",            f"{BASE}/guide",                                "Guide d'utilisation",          False),
         ]
 
         for filename, url, label, scroll_bottom in pages:
@@ -106,7 +107,7 @@ def run():
                 if scroll_bottom:
                     page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
                     time.sleep(0.3)
-                full = filename in ("18_guide",)
+                full = filename in ("19_guide",)
                 page.screenshot(path=os.path.join(OUT, f"{filename}.png"), full_page=full)
                 print(f"  OK  {filename}.png  —  {label}")
             except Exception as e:

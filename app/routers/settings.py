@@ -144,6 +144,25 @@ async def test_ldap(request: Request, db: Session = Depends(get_db)):
         return JSONResponse({"ok": False, "message": f"Échec : {e}"})
 
 
+@router.post("/purge-secrets")
+async def purge_secrets(request: Request, confirmation: str = Form(""), db: Session = Depends(get_db)):
+    from app import models
+    from app.utils import log_activity
+    user = require_responsable(request, db)
+    if confirmation != "je supprime tous les secrets":
+        set_flash(request, "Phrase de confirmation incorrecte. Aucun secret supprimé.", "error")
+        return RedirectResponse("/settings/?tab=danger", status_code=302)
+    db.query(models.AuditCheck).delete()
+    db.query(models.AuditSession).delete()
+    db.query(models.SecretHistory).delete()
+    db.query(models.Secret).delete()
+    db.commit()
+    log_activity(db, user, "Purge totale des secrets")
+    db.commit()
+    set_flash(request, "Tous les secrets ont été supprimés définitivement.")
+    return RedirectResponse("/settings/?tab=danger", status_code=302)
+
+
 def _current_logo_url() -> str | None:
     for ext in _LOGO_EXTS:
         path = os.path.join("uploads", f"logo_custom{ext}")
