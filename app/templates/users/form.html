@@ -18,6 +18,24 @@
         action="{% if target and target.id %}/users/{{ target.id }}/edit{% else %}/users/{% endif %}"
         class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5">
 
+    <!-- Prénom / Nom -->
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1.5">Prénom</label>
+        <input type="text" name="first_name"
+               value="{{ target.first_name if target and target.first_name else '' }}"
+               placeholder="ex: Jean"
+               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      </div>
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1.5">Nom</label>
+        <input type="text" name="last_name"
+               value="{{ target.last_name if target and target.last_name else '' }}"
+               placeholder="ex: Dupont"
+               class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      </div>
+    </div>
+
     <!-- Username -->
     <div>
       <label class="block text-xs font-medium text-gray-600 mb-1.5">

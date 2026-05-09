@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app import models
-from app.utils import require_login, get_flash, paginate
+from app.utils import require_responsable, get_flash, paginate
 from app.templates_config import templates
 
 router = APIRouter()
@@ -18,7 +18,7 @@ async def list_activity(
     action: str = "",
     db: Session = Depends(get_db)
 ):
-    user = require_login(request, db)
+    user = require_responsable(request, db)
 
     query = db.query(models.ActivityLog).order_by(models.ActivityLog.timestamp.desc())
     if username:

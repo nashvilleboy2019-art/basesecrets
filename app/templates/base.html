@@ -50,6 +50,7 @@
           </svg>
           Audit annuel
         </a>
+        {% if user.role == 'responsable' %}
         <a href="/activity" class="flex items-center gap-1.5 px-3 h-full text-xs font-medium transition-colors border-b-2
           {% if active == 'activity' %}nav-item-active border-transparent{% else %}text-slate-300 hover:text-white border-transparent hover:border-slate-400{% endif %}">
           <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,6 +59,7 @@
           </svg>
           Journal
         </a>
+        {% endif %}
         {% if user.role == 'responsable' %}
         <a href="/users/" class="flex items-center gap-1.5 px-3 h-full text-xs font-medium transition-colors border-b-2
           {% if active == 'users' %}nav-item-active border-transparent{% else %}text-slate-300 hover:text-white border-transparent hover:border-slate-400{% endif %}">
@@ -88,15 +90,15 @@
 
       <!-- Right : user + logout -->
       <div class="flex items-center gap-3 flex-shrink-0">
-        <div class="flex items-center gap-2">
+        <a href="/users/profile" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style="background-color:var(--color-accent)">
-            {{ user.username[0]|upper }}
+            {{ user.display_name[0]|upper }}
           </div>
           <div class="leading-tight">
-            <p class="text-white text-xs font-medium">{{ user.username }}</p>
+            <p class="text-white text-xs font-medium">{{ user.display_name }}</p>
             <p class="text-slate-400 text-xs capitalize">{{ user.role }}</p>
           </div>
-        </div>
+        </a>
         <a href="/logout"
            class="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded-md transition-colors">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

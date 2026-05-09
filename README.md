@@ -27,12 +27,13 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 ## Fonctionnalités
 
 - **Tableau de bord statistique** — vue d'ensemble avec cards (actifs, archivés, domaines, coffres, audits, utilisateurs), graphique mixte secrets/mois (barres ajoutés + archivés + courbe cumul actifs), donut actifs/archivés, top 5 actions, progression des audits en cours, activité récente avec badges colorés
+- **Profil utilisateur** — chaque utilisateur peut modifier son prénom, son nom et changer son mot de passe depuis l'avatar en haut à droite (vérification de l'ancien mot de passe requise)
 - **Registre des secrets** — référentiel centralisé avec recherche full-text (libellé, identifiant, nom technique, numéro d'enveloppe actuel et anciens numéros)
 - **Archivage** — désactiver un secret obsolète sans perdre la traçabilité ; les archivés sont masqués par défaut et exclus des audits
 - **Import CSV / Excel** — import en masse depuis un fichier `.csv` ou `.xlsx` avec rapport détaillé (importés / doublons / erreurs)
 - **Changement d'enveloppe** — flux dédié avec traçabilité complète : ancien numéro, nouveau numéro, opérateur, date, note optionnelle
 - **Audit annuel par coffre** — session de scan en temps réel avec douchette USB ; périmètre limité à un coffre précis ; rapport de conformité imprimable (manquants filtrés par coffre, archivés exclus)
-- **Journal d'activité** — toutes les actions tracées (connexions, modifications, audits, imports, archivages)
+- **Journal d'activité** — toutes les actions tracées (connexions, modifications, audits, imports, archivages) — accès réservé aux responsables
 - **Gestion des comptes** — création, modification, suppression avec protection du dernier responsable
 - **SSO Active Directory** — authentification LDAP avec restriction par OU et/ou groupe AD ; fallback local ; création automatique des comptes
 - **Thème couleurs** — personnalisation de la couleur principale (sidebar) et secondaire (boutons/accents) depuis les paramètres
@@ -47,7 +48,8 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 | Consulter les secrets | ✓ | ✓ |
 | Rechercher | ✓ | ✓ |
 | Audit annuel + impression rapport | ✓ | ✓ |
-| Journal d'activité | ✓ | ✓ |
+| Modifier son profil (nom, prénom, mot de passe) | ✓ | ✓ |
+| Journal d'activité | — | ✓ |
 | Créer / modifier un secret | — | ✓ |
 | Archiver / désarchiver un secret | — | ✓ |
 | Importer CSV / Excel | — | ✓ |
@@ -110,7 +112,7 @@ basesecrets/
 ├── docker-compose.yml
 ├── app/
 │   ├── main.py
-│   ├── models.py             # Secret, SecretHistory, AuditSession, User…
+│   ├── models.py             # Secret, SecretHistory, AuditSession, User (first_name, last_name)…
 │   ├── auth.py               # bcrypt + LDAP
 │   ├── settings_manager.py   # lecture/écriture data/settings.json
 │   ├── utils.py

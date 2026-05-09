@@ -25,6 +25,13 @@ if __name__ == "__main__":
         if "archived" not in secret_cols:
             conn.execute(text("ALTER TABLE secrets ADD COLUMN archived BOOLEAN NOT NULL DEFAULT 0"))
             print("  Migration : colonne 'archived' ajoutée à secrets")
+        user_cols = [c["name"] for c in inspector.get_columns("users")]
+        if "first_name" not in user_cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN first_name VARCHAR(100)"))
+            print("  Migration : colonne 'first_name' ajoutée à users")
+        if "last_name" not in user_cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN last_name VARCHAR(100)"))
+            print("  Migration : colonne 'last_name' ajoutée à users")
         conn.commit()
 
     db = SessionLocal()

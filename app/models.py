@@ -10,7 +10,15 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     role = Column(String(20), nullable=False, default="auditeur")
+    first_name = Column(String(100), nullable=True)
+    last_name = Column(String(100), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    @property
+    def display_name(self):
+        if self.first_name or self.last_name:
+            return f"{self.first_name or ''} {self.last_name or ''}".strip()
+        return self.username
 
 
 class Secret(Base):

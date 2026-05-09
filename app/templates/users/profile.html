@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Mon profil — BaseSecrets{% endblock %}
+
+{% block content %}
+<div class="p-6 max-w-lg mx-auto">
+
+  <div class="mb-6">
+    <h1 class="text-xl font-bold text-gray-900">Mon profil</h1>
+    <p class="text-xs text-gray-500 mt-0.5">{{ user.username }} · {{ 'Responsable' if user.role == 'responsable' else 'Auditeur' }}</p>
+  </div>
+
+  {% if flash %}
+  <div class="mb-4 px-4 py-3 rounded-lg text-sm font-medium
+    {% if flash.category == 'error' %}bg-red-50 text-red-700 border border-red-200
+    {% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+    {{ flash.message }}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/users/profile" class="space-y-4">
+
+    <!-- Identité -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <h2 class="font-semibold text-gray-800 mb-4 text-sm">Identité</h2>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Prénom</label>
+          <input type="text" name="first_name" value="{{ user.first_name or '' }}"
+                 placeholder="ex : Jean"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Nom</label>
+          <input type="text" name="last_name" value="{{ user.last_name or '' }}"
+                 placeholder="ex : Dupont"
+                 class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">Affiché à la place du nom d'utilisateur dans l'interface.</p>
+    </div>
+
+    <!-- Mot de passe -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+      <h2 class="font-semibold text-gray-800 mb-4 text-sm">Changer le mot de passe</h2>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Mot de passe actuel</label>
+          <input type="password" name="current_password" autocomplete="current-password"
+                 class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400
+                        {{ 'border-red-400 bg-red-50' if errors.current_password else 'border-gray-300' }}">
+          {% if errors.current_password %}
+          <p class="text-xs text-red-600 mt-1">{{ errors.current_password }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Nouveau mot de passe</label>
+          <input type="password" name="new_password" autocomplete="new-password"
+                 class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400
+                        {{ 'border-red-400 bg-red-50' if errors.new_password else 'border-gray-300' }}">
+          {% if errors.new_password %}
+          <p class="text-xs text-red-600 mt-1">{{ errors.new_password }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1.5">Confirmer le nouveau mot de passe</label>
+          <input type="password" name="confirm_password" autocomplete="new-password"
+                 class="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400
+                        {{ 'border-red-400 bg-red-50' if errors.confirm_password else 'border-gray-300' }}">
+          {% if errors.confirm_password %}
+          <p class="text-xs text-red-600 mt-1">{{ errors.confirm_password }}</p>
+          {% endif %}
+        </div>
+        <p class="text-xs text-gray-400">Laisser vide pour ne pas modifier le mot de passe.</p>
+      </div>
+    </div>
+
+    <button type="submit"
+            class="w-full px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors">
+      Enregistrer
+    </button>
+
+  </form>
+</div>
+{% endblock %}
