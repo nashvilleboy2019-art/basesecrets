@@ -8,11 +8,13 @@ from datetime import datetime
 import json
 import os
 
-from app.database import get_db
+from app.database import get_db, engine
 from app import models, auth
-from app.routers import secrets, audit, activity, users, settings as settings_router
+from app.routers import secrets, audit, activity, users, settings as settings_router, api_v1
 from app.templates_config import templates
 from app.utils import get_flash, log_activity, require_login
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="BaseSecrets")
 app.add_middleware(SessionMiddleware, secret_key="basesecrets-change-this-key-in-prod")
@@ -36,6 +38,7 @@ app.include_router(audit.router, prefix="/audit")
 app.include_router(activity.router, prefix="/activity")
 app.include_router(users.router, prefix="/users")
 app.include_router(settings_router.router, prefix="/settings")
+app.include_router(api_v1.router, prefix="/api/v1", tags=["API"])
 
 
 @app.exception_handler(HTTPException)

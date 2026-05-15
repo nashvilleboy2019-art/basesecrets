@@ -18,11 +18,16 @@ _MAX_LOGO = 2 * 1024 * 1024  # 2 Mo
 async def settings_page(request: Request, db: Session = Depends(get_db)):
     user = require_responsable(request, db)
     cfg = settings_manager.load()
+    from app import models as _models
+    api_keys = db.query(_models.ApiKey).order_by(_models.ApiKey.created_at.desc()).all()
+    new_api_key = request.session.pop("new_api_key", None)
     return templates.TemplateResponse(request, "settings/index.html", {
         "user": user, "active": "settings",
         "flash": get_flash(request),
         "cfg": cfg,
         "logo_url": _current_logo_url(),
+        "api_keys": api_keys,
+        "new_api_key": new_api_key,
     })
 
 
@@ -142,6 +147,53 @@ async def test_ldap(request: Request, db: Session = Depends(get_db)):
         return JSONResponse({"ok": True, "message": f"Serveur {cfg['ldap_server']}:{cfg.get('ldap_port', 389)} joignable."})
     except Exception as e:
         return JSONResponse({"ok": False, "message": f"Échec : {e}"})
+
+
+@router.post("/api-keys")
+async def create_api_key(
+    request: Request,
+    name: str = Form(""),
+    db: Session = Depends(get_db),
+):
+    import secrets as _secrets
+    from hashlib import sha256
+    from app import models as _models
+    user = require_responsable(request, db)
+    raw = "sec_" + _secrets.token_hex(24)
+    prefix = raw[:12] + "****"
+    key_hash = sha256(raw.encode()).hexdigest()
+    db.add(_models.ApiKey(
+        name=name.strip() or "Sans nom",
+        key_hash=key_hash,
+        prefix=prefix,
+        is_active=True,
+        created_by=user.id,
+    ))
+    db.commit()
+    request.session["new_api_key"] = raw
+    return RedirectResponse("/settings/?tab=api", status_code=302)
+
+
+@router.post("/api-keys/{key_id}/revoke")
+async def revoke_api_key(request: Request, key_id: int, db: Session = Depends(get_db)):
+    from app import models as _models
+    require_responsable(request, db)
+    k = db.query(_models.ApiKey).filter(_models.ApiKey.id == key_id).first()
+    if k:
+        k.is_active = not k.is_active
+        db.commit()
+    return RedirectResponse("/settings/?tab=api", status_code=302)
+
+
+@router.post("/api-keys/{key_id}/delete")
+async def delete_api_key(request: Request, key_id: int, db: Session = Depends(get_db)):
+    from app import models as _models
+    require_responsable(request, db)
+    k = db.query(_models.ApiKey).filter(_models.ApiKey.id == key_id).first()
+    if k:
+        db.delete(k)
+        db.commit()
+    return RedirectResponse("/settings/?tab=api", status_code=302)
 
 
 @router.post("/purge-secrets")

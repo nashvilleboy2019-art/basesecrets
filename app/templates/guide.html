@@ -36,6 +36,7 @@
           <a href="#comptes" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Comptes</a>
           <a href="#import" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Import CSV/Excel</a>
           <a href="#parametres" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ Paramètres</a>
+          <a href="#api" class="block text-gray-600 hover:text-indigo-600 py-0.5 pl-2">→ API REST</a>
           <a href="#docker" class="block text-gray-600 hover:text-indigo-600 py-0.5">Docker</a>
           <a href="#douchette" class="block text-gray-600 hover:text-indigo-600 py-0.5">Douchette USB</a>
           <a href="#faq" class="block text-gray-600 hover:text-indigo-600 py-0.5">FAQ</a>
@@ -408,7 +409,7 @@
         <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Paramètres</h2>
         <div class="space-y-5 text-gray-600">
           <img src="/screenshots/14_settings_general.png" alt="Paramètres" class="w-full rounded-xl border border-gray-200 shadow-sm mb-2">
-          <p>Accessible depuis le menu <strong>Paramètres</strong> (responsables uniquement). Trois onglets : <strong>Général</strong>, <strong>Thème</strong> et <strong>Active Directory</strong>.</p>
+          <p>Accessible depuis le menu <strong>Paramètres</strong> (responsables uniquement). Cinq onglets : <strong>Général</strong>, <strong>Thème</strong>, <strong>Active Directory</strong>, <strong>API</strong> et <strong>Zone dangereuse</strong>.</p>
 
           <div>
             <h3 class="font-semibold text-gray-800 mb-2">Logo société</h3>
@@ -443,6 +444,57 @@
               <p>Si l'authentification AD échoue (serveur indisponible, OU non autorisée, groupe manquant), la connexion bascule automatiquement sur le compte local.</p>
               <p>Les comptes créés automatiquement depuis AD sont visibles et gérables dans la page <strong>Comptes</strong>.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- API REST -->
+      <section id="api">
+        <h2 class="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">API REST</h2>
+        <div class="space-y-5 text-gray-600">
+          <p>BaseSECRETS expose une API REST destinée aux outils externes (Plan de Contrôle Cyber, reporting automatisé, etc.). L'accès est sécurisé par clé API gérée depuis <strong>Paramètres → API</strong> (responsables uniquement).</p>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Créer une clé API</h3>
+            <ol class="list-decimal list-inside space-y-1">
+              <li>Aller dans <strong>Paramètres → API</strong></li>
+              <li>Saisir le nom de l'application cliente (ex : <em>plandecontrole</em>)</li>
+              <li>Cliquer sur <strong>Générer la clé</strong></li>
+              <li>Copier la clé affichée — elle n'est visible qu'une seule fois</li>
+            </ol>
+            <div class="mt-3 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-amber-800 text-xs">
+              La clé complète n'est affichée qu'au moment de la création. Passé ce moment, seul le préfixe (<code class="font-mono">sec_XXXXXXXX****</code>) reste visible. Si la clé est perdue, supprimez-la et générez-en une nouvelle.
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Endpoints disponibles</h3>
+            <div class="overflow-hidden rounded-xl border border-gray-200">
+              <table class="w-full text-xs">
+                <thead><tr class="bg-gray-50 text-gray-500 uppercase tracking-wide border-b"><th class="text-left px-3 py-2 font-medium">Endpoint</th><th class="text-left px-3 py-2 font-medium">Description</th></tr></thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr><td class="px-3 py-2 font-mono text-indigo-700">GET /api/v1/users</td><td class="px-3 py-2 text-gray-600">Liste des utilisateurs (id, username, prénom, nom, rôle, date de création)</td></tr>
+                  <tr class="bg-gray-50"><td class="px-3 py-2 font-mono text-indigo-700">GET /api/v1/connections</td><td class="px-3 py-2 text-gray-600">Événements de connexion, filtrable par <code class="bg-gray-100 px-1 rounded">from_date</code> et <code class="bg-gray-100 px-1 rounded">to_date</code> (format YYYY-MM-DD)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Authentification</h3>
+            <p class="text-xs mb-2">Passez la clé dans le header <code class="bg-gray-100 px-1 rounded font-mono">X-API-Key</code> :</p>
+            <div class="bg-slate-800 text-emerald-300 rounded-lg px-4 py-3 font-mono text-xs overflow-x-auto whitespace-nowrap">
+              GET http://127.0.0.1:8000/api/v1/users &nbsp; X-API-Key: sec_xxxx...
+            </div>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-2">Révoquer ou supprimer une clé</h3>
+            <p>Depuis <strong>Paramètres → API</strong>, chaque clé peut être :</p>
+            <ul class="list-disc list-inside space-y-1 mt-1 text-xs">
+              <li><strong>Révoquée</strong> — désactivée temporairement (peut être réactivée)</li>
+              <li><strong>Supprimée</strong> — effacée définitivement</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -531,7 +583,9 @@
             ("Comment limiter la connexion AD à certains utilisateurs ?",
              "Dans Paramètres → Active Directory, renseignez l'OU autorisée (ex : OU=BaseSecrets,DC=entreprise,DC=local) pour n'autoriser que les comptes de cette unité organisationnelle. Vous pouvez aussi définir un groupe AD requis : seuls les membres de ce groupe (attribut memberOf) pourront se connecter."),
             ("Comment personnaliser les couleurs de l'interface ?",
-             "Allez dans Paramètres → Thème. Deux selecteurs de couleur : la couleur principale pour la sidebar et la page de connexion, la couleur secondaire pour les boutons et l'élément actif. Cliquez sur Réinitialiser pour revenir aux couleurs d'origine.")
+             "Allez dans Paramètres → Thème. Deux selecteurs de couleur : la couleur principale pour la sidebar et la page de connexion, la couleur secondaire pour les boutons et l'élément actif. Cliquez sur Réinitialiser pour revenir aux couleurs d'origine."),
+            ("J'ai perdu ma clé API, que faire ?",
+             "La clé complète n'est affichée qu'une seule fois à la création et ne peut pas être récupérée. Allez dans Paramètres → API, supprimez l'ancienne clé et créez-en une nouvelle. Mettez à jour la configuration de l'application cliente avec la nouvelle valeur.")
           ] %}
 
           {% for question, reponse in faq %}

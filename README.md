@@ -36,6 +36,8 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 - **Journal d'activité** — toutes les actions tracées (connexions, modifications, audits, imports, archivages) — accès réservé aux responsables
 - **Gestion des comptes** — création, modification, suppression avec protection du dernier responsable
 - **SSO Active Directory** — authentification LDAP avec restriction par OU et/ou groupe AD ; fallback local ; création automatique des comptes
+- **Clés API multi-applications** — gestion de clés API nommées par application cliente (création, révocation, suppression) ; clé affichée une seule fois à la génération ; suivi préfixe + date de dernière utilisation
+- **API REST** — `GET /api/v1/users` et `GET /api/v1/connections` sécurisés par header `X-API-Key`
 - **Thème couleurs** — personnalisation de la couleur principale (sidebar) et secondaire (boutons/accents) depuis les paramètres
 - **Logo société** — personnalisation de la page de connexion
 - **Zone dangereuse** — purge totale des secrets avec confirmation par phrase (responsable uniquement)
@@ -56,6 +58,7 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 | Changer un numéro d'enveloppe | — | ✓ |
 | Gérer les comptes | — | ✓ |
 | Paramètres (logo, thème, SSO AD) | — | ✓ |
+| Gérer les clés API | — | ✓ |
 | Purger tous les secrets | — | ✓ |
 
 ## Stack technique
@@ -112,7 +115,7 @@ basesecrets/
 ├── docker-compose.yml
 ├── app/
 │   ├── main.py
-│   ├── models.py             # Secret, SecretHistory, AuditSession, User (first_name, last_name)…
+│   ├── models.py             # Secret, SecretHistory, AuditSession, User, ApiKey…
 │   ├── auth.py               # bcrypt + LDAP
 │   ├── settings_manager.py   # lecture/écriture data/settings.json
 │   ├── utils.py
@@ -121,7 +124,8 @@ basesecrets/
 │   │   ├── audit.py
 │   │   ├── activity.py
 │   │   ├── users.py
-│   │   └── settings.py       # logo, LDAP
+│   │   ├── settings.py       # logo, thème, LDAP, clés API
+│   │   └── api_v1.py         # API REST (X-API-Key)
 │   └── templates/
 │       ├── settings/
 │       └── secrets/import.html
@@ -142,6 +146,30 @@ Un secret archivé conserve toute sa traçabilité (historique, audits passés) 
 Depuis **Paramètres → Thème**, les responsables peuvent personnaliser :
 - **Couleur principale** — fond de la sidebar et de la page de connexion (défaut : bleu nuit `#0f172a`)
 - **Couleur secondaire** — boutons d'action et élément de navigation actif (défaut : indigo `#4f46e5`)
+
+## API REST
+
+BaseSECRETS expose une API REST sécurisée par clé API, destinée aux outils externes (Plan de Contrôle Cyber, reporting, etc.).
+
+### Gestion des clés
+
+Depuis **Paramètres → API**, les responsables peuvent créer des clés nommées par application cliente. La clé complète est affichée **une seule fois** à la génération — elle doit être copiée immédiatement. Seul le préfixe (`sec_XXXXXXXX****`) est affiché par la suite.
+
+### Endpoints
+
+| Méthode | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/v1/users` | Liste des utilisateurs (id, username, prénom, nom, rôle) |
+| `GET` | `/api/v1/connections` | Événements de connexion, filtrable par `from_date` / `to_date` (YYYY-MM-DD) |
+
+### Authentification
+
+Passez la clé dans le header `X-API-Key` de chaque requête :
+
+```
+GET http://127.0.0.1:8000/api/v1/users
+X-API-Key: sec_xxxxxxxxxxxx...
+```
 
 ## Zone dangereuse
 
