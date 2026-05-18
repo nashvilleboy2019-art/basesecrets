@@ -22,6 +22,10 @@ Déploiement local Windows ou Docker, aucune dépendance cloud.
 |---|---|
 | ![Audit](screenshots/08_audit_list.png) | ![Rapport](screenshots/10_audit_report.png) |
 
+| Paramètres API — liste des clés | Génération d'une nouvelle clé |
+|---|---|
+| ![API keys](screenshots/15_settings_api.png) | ![New key](screenshots/15_settings_api_new_key.png) |
+
 ---
 
 ## Fonctionnalités
